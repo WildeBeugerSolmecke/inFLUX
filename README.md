@@ -1,6 +1,6 @@
 # influx
 
-A new Flutter project.
+A Flutter template for influencers and companies alike.
 
 ## Getting Started
 
