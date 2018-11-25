@@ -5,4 +5,5 @@ import 'package:flutter/material.dart';
 class InFluxConfig {
   static final MaterialColor primaryColor = Colors.blue;
   static final String title = 'inFLUX';
+  static final String appBarTitle = 'inFLUX';
 }
