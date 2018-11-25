@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
 import 'package:influx/HomePage.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(App());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+/// The root widget.
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: InFluxConfig.primaryColor,
       ),
-      home: MyHomePage(),
+      home: HomePage(),
     );
   }
 }

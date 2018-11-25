@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
+import 'package:influx/widgets/RssFeedPage.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+/// The home page (that get's displayed on app start).
+class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
 
   final String title = InFluxConfig.appBarTitle;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _HomePageState extends State<HomePage> {
+  int _navbarIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -30,21 +25,49 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // TODO: Show a (yet to be created) widget at this place, that
+            // TODO: aggregates all different information channels!
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              '[Info feed]',
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      bottomNavigationBar: BottomNavigationBar(
+        // TODO: The nav bar must be extracted into a new class, so it can a) be
+        // TODO: reused easily and b) get generated according to different needs!
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text('Home')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text('YT Channel')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text('RSS Feed')
+          ),
+        ],
+        currentIndex: _navbarIndex,
+        fixedColor: Colors.blue,
+        onTap: _onNavBarTap,
       ),
     );
+  }
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _navbarIndex = index;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          // TODO: The routes should be generated as well (see above)!
+            builder: (context) => RssFeedPage(
+                  title: widget.title,
+                )),
+        // TODO: Don't navigate to a new page via "MaterialPageRoute" (which
+        // TODO: creates an ugly arrow in the upper left corner), rather change
+        // TODO: the CONTENT of the Center()!
+      );
+    });
   }
 }
