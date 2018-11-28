@@ -16,19 +16,43 @@ class _RssFeedState extends State<RssFeedPage> {
   @override
   Widget build(BuildContext context) {
     var rssReader = RssFeedReader(url: InFluxConfig.rssFeedUrl);
-    var posts = rssReader.fetchRssPosts();
-
-    // TODO: posts.then(...);
+    final maxRssFeedItems = 20;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: ListView(
-        children: <Widget>[
-          // TODO: see above!
-        ],
-      ),
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: FutureBuilder(
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                var listItems = snapshot.data
+                    .map<ListTile>((rssPost) => ListTile(
+                          leading: Icon(Icons.arrow_right),
+                          title: rssPostTitleToText(rssPost),
+                          // TODO: onClick with link URL!
+                        ))
+                    .toList();
+
+                return ListView(
+                  children: listItems,
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}"); // TODO: Hide error details!
+
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+            future: rssReader.fetchRssPosts(maxRssFeedItems),
+          ),
+        )
     );
+  }
+
+  Text rssPostTitleToText(RssPost post) {
+    // TODO: Handle German Umlauts!
+    // TODO: Trim string to fit a single line!
+    return Text(post.title);
   }
 }

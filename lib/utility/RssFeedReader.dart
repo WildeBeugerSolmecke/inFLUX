@@ -8,7 +8,7 @@ class RssFeedReader {
 
   RssFeedReader({this.url});
 
-  Future<List<RssItem>> fetchRssPosts() async {
+  Future<List<RssPost>> fetchRssPosts(int maxItems) async {
     print('Fetching RSS feed: ' + url + '...');
     var response = await get(url);
 
@@ -16,6 +16,20 @@ class RssFeedReader {
     var feed = RssFeed.parse(response.body);
 
     print('Feed.items.length: ' + feed.items.length.toString());
-    return feed.items;
+    return feed
+        .items
+        .sublist(0, maxItems)
+    .map((rssItem) => RssPost(title: rssItem.title))
+    .toList();
+
+    // TODO: add some kind of pagination!
   }
+}
+
+class RssPost {
+
+  final String title;
+
+  RssPost({this.title});
+
 }
