@@ -15,8 +15,9 @@ class RssFeedPage extends StatefulWidget {
 class _RssFeedState extends State<RssFeedPage> {
   @override
   Widget build(BuildContext context) {
-    var rssReader = RssFeedReader(url: InFluxConfig.rssFeedUrl);
     final maxRssFeedItems = 20;
+    var rssReader = RssFeedReader(url: InFluxConfig.rssFeedUrl);
+    var rssPosts = rssReader.fetchRssPosts(maxRssFeedItems);
 
     return Scaffold(
         appBar: AppBar(
@@ -44,7 +45,7 @@ class _RssFeedState extends State<RssFeedPage> {
                 return CircularProgressIndicator();
               }
             },
-            future: rssReader.fetchRssPosts(maxRssFeedItems),
+            future: rssPosts,
           ),
         )
     );
