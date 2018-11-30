@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_youtube/flutter_youtube.dart';
+import 'package:http/http.dart';
 import 'package:influx/utility/Youtube/youtube_api_adapter.dart';
-import 'package:influx/utility/Youtube/youtube_video_info.dart';
+import 'package:influx/utility/Youtube/youtube_channel_with_videos.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/youtube_video_list_item.dart';
 
 class YoutubePage extends StatelessWidget {
+
   final String title;
 
-  YoutubePage({Key key, this.title}) : super(key: key);
+  YoutubePage({@required this.title});
 
   @override
   Widget build(BuildContext context) {
-    // FlutterYoutube.playYoutubeVideoByUrl(apiKey: "AIzaSyBoht9JEZzn_-E6p3tHVsErOyL77yXko_M", videoUrl: "https://www.youtube.com/watch?v=E7jwPMxJMfo");
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
         ),
-        backgroundColor: Colors.red,
-        body: FutureBuilder<List<YoutubeVideoInfo>>(
-          future: YoutubeApiAdapter().getVideos(apiKey: InFluxConfig.youtubeApiKey, channelId: InFluxConfig.youtubeChannelId, results: 20),
+        backgroundColor: Colors.black26,
+        body: FutureBuilder<YoutubeChannelWithVideos>(
+          future: YoutubeApiAdapter().getYoutubeChannelAndVideos(httpClient: Client(), channelId: InFluxConfig.youtubeChannelId, apiKey: InFluxConfig.youtubeApiKey),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              var videos = snapshot.data;
+              var channelInfo = snapshot.data.channel;
+              var videos = snapshot.data.videos;
               return ListView.builder(
-                  itemBuilder: (context, index) => YoutubeVideoListItem(videoInfo: videos[index]),
+                  itemBuilder: (context, index) => YoutubeVideoListItem(videoInfo: videos[index], channelInfo: channelInfo),
                   itemCount: videos.length);
             } else if (snapshot.hasError) {
               return Text("Something went wrong");

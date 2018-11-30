@@ -15,5 +15,4 @@ class InFluxConfig {
   static final String youtubeApiKey = 'API-KEY-GOES-HERE';
   static final String youtubeChannelName = 'kanzleiwbs';
   static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
-
 }

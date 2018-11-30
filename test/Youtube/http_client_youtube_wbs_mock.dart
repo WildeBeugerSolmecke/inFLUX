@@ -1,0 +1,14 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart';
+import 'package:mockito/mockito.dart';
+
+import 'youtube_responses.dart';
+
+class HttpClientYoutubeWbsMock extends Mock implements Client{
+  HttpClientYoutubeWbsMock(){
+    when(this.get(contains("https://www.googleapis.com/youtube/v3/channels")))
+        .thenAnswer((_)async => Response(YoutubeResponses.wbsChannelInfo, 200));
+    when(this.get(contains("https://www.googleapis.com/youtube/v3/search")))
+        .thenAnswer((_)async => Response(YoutubeResponses.wbsVideoInfos, 200));
+  }
+}
