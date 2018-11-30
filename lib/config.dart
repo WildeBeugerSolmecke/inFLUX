@@ -12,8 +12,11 @@ class InFluxConfig {
   //content:
   static final String rssFeedUrl = 'http://www.tagesschau.de/xml/rss2';
 
-  static final String youtubeApiKey = 'API-KEY-GOES-HERE';
-  static final String youtubeChannelName = 'kanzleiwbs';
-  static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
+  static final String youtubeApiKey = 'AIzaSyC8FMty17OjZdNnCKD3cYf9lrt7O4EJ7XA';
+/*  static final String youtubeChannelName = 'kanzleiwbs';
+  static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';*/
+
+  static final String youtubeChannelName = '1998Records';
+  static final String youtubeChannelId = 'UCVmVt5LK0ZT8mWXL58fXZgw';
 
 }

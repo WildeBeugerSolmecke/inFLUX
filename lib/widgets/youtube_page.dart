@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_youtube/flutter_youtube.dart';
 import 'package:influx/utility/Youtube/youtube_api_adapter.dart';
+import 'package:influx/utility/Youtube/youtube_channel_info.dart';
 import 'package:influx/utility/Youtube/youtube_video_info.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/youtube_video_list_item.dart';
 
 class YoutubePage extends StatelessWidget {
   final String title;
-
-  YoutubePage({Key key, this.title}) : super(key: key);
+  final YoutubeChannelInfo channelInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class YoutubePage extends StatelessWidget {
         appBar: AppBar(
           title: Text(title),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.black26,
         body: FutureBuilder<List<YoutubeVideoInfo>>(
           future: YoutubeApiAdapter().getVideos(apiKey: InFluxConfig.youtubeApiKey, channelId: InFluxConfig.youtubeChannelId, results: 20),
           builder: (context, snapshot) {
