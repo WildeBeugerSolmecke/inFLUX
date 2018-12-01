@@ -12,7 +12,6 @@ class InFluxConfig {
   //content:
   static final String rssFeedUrl = 'http://www.tagesschau.de/xml/rss2';
 
-  static final String youtubeApiKey = 'API-KEY-GOES-HERE';
-  static final String youtubeChannelName = 'kanzleiwbs';
+  static final String youtubeApiKey = "API-KEY-GOES-HERE";
   static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
 }
