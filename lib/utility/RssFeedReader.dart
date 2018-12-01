@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 import 'package:webfeed/webfeed.dart';
 import 'dart:math';
 
@@ -15,20 +16,19 @@ class RssFeedReader {
         httpClient = http.Client();
 
   /// A secondary constructor that allows to override the default implementations.
-  RssFeedReader.build({this.url, this.rssFeedParser, this.httpClient});
+  RssFeedReader.build({@required this.url, rssFeedParser, httpClient})
+      : rssFeedParser = rssFeedParser ?? defaultRssFeedParser,
+        httpClient = httpClient ?? http.Client();
 
   /// Fetches (a maximum of 'maxItems') RSS feed posts. Returns a future!
   Future<List<RssPost>> fetchRssPosts(int maxItems) async {
-    print('Fetching RSS feed: ' + url + '...');
     var response = await httpClient.get(url);
-
-    print('Response.statusCode: ' + response.statusCode.toString());
     var feed = rssFeedParser(response.body);
 
     var n = min(feed.items.length, maxItems);
     return feed.items
         .sublist(0, n)
-        .map((rssItem) => RssPost(title: rssItem.title))
+        .map((rssItem) => RssPost(title: rssItem.title, url: rssItem.link))
         .toList();
 
     // TODO: add some kind of pagination!
@@ -39,6 +39,7 @@ class RssFeedReader {
 /// 'RssItem' class (which is an implementation detail) from callers.
 class RssPost {
   final String title;
+  final String url;
 
-  RssPost({this.title});
+  RssPost({@required this.title, this.url});
 }

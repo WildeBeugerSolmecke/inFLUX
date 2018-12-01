@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
 import 'package:influx/utility/RssFeedReader.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
@@ -31,13 +32,13 @@ class _RssFeedState extends State<RssFeedPage> {
                     .map<ListTile>((rssPost) => ListTile(
                           leading: Icon(Icons.arrow_right),
                           title: rssPostTitleToText(rssPost),
-                          // TODO: onClick with link URL!
+                          onTap: rssPostUrlToTapCallback(rssPost),
                         ))
                     .toList();
-
                 return ListView(
                   children: listItems,
                 );
+                
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}"); // TODO: Hide error details!
 
@@ -47,13 +48,15 @@ class _RssFeedState extends State<RssFeedPage> {
             },
             future: rssPosts,
           ),
-        )
-    );
+        ));
   }
 
   Text rssPostTitleToText(RssPost post) {
-    // TODO: Handle German Umlauts!
     // TODO: Trim string to fit a single line!
     return Text(post.title);
+  }
+
+  GestureTapCallback rssPostUrlToTapCallback(RssPost post) {
+    return () => launch(post.url);
   }
 }

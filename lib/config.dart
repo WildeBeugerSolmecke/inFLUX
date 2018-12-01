@@ -10,6 +10,6 @@ class InFluxConfig {
   static const String appBarTitle = 'inFLUX';
 
   //content:
-  static const String rssFeedUrl = 'http://www.tagesschau.de/xml/rss2';
+  static const String rssFeedUrl = 'http://rss.cnn.com/rss/edition.rss';
 
 }
