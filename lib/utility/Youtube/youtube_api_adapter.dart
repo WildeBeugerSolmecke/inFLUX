@@ -17,14 +17,14 @@ class YoutubeApiAdapter {
       {@required Client httpClient,
       @required final String channelId,
       @required final String apiKey, final int maxResults = 10}) async {
+
     List responses = await Future.wait([
       getChannelInfo(
           httpClient: httpClient, channelId: channelId, apiKey: apiKey),
       getVideos(httpClient: httpClient, channelId: channelId, maxResults: 10, apiKey: apiKey)
     ]);
 
-    return YoutubeChannelWithVideos(
-        channel: responses[0], videos: responses[1]);
+    return YoutubeChannelWithVideos(channel: responses[0], videos: responses[1]);
   }
 
   Future<YoutubeChannelInfo> getChannelInfo(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:influx/utility/Youtube/datetime_converter.dart';
 import 'package:influx/utility/Youtube/model/thumbnail_size.dart';
 import 'package:influx/utility/Youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/Youtube/model/youtube_video_info.dart';
@@ -70,7 +71,7 @@ class YoutubeVideoListItem extends StatelessWidget{
                         ),
                         SizedBox(height: 4.0),
                         Text(
-                          '${videoInfo.publishedAt}',
+                          '${DateTimeConverter.getDurationAsText(videoInfo.publishedAt)}',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Color(0XFFBBBBBB),
