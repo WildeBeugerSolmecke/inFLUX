@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:influx/config.dart';
-import 'package:influx/utility/Youtube/thumbnail_size.dart';
+import 'package:influx/utility/Youtube/model/thumbnail_size.dart';
 import 'package:influx/utility/Youtube/youtube_api_adapter.dart';
-import 'package:influx/utility/Youtube/youtube_channel_info.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_info.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 

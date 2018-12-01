@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:influx/utility/Youtube/youtube_api_adapter.dart';
-import 'package:influx/utility/Youtube/youtube_channel_with_videos.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/youtube_video_list_item.dart';
 
@@ -28,10 +28,10 @@ class YoutubePage extends StatelessWidget {
                   itemBuilder: (context, index) => YoutubeVideoListItem(videoInfo: videos[index], channelInfo: channelInfo),
                   itemCount: videos.length);
             } else if (snapshot.hasError) {
-              return Text("Something went wrong");
+              return Center(child:Text("Something went wrong"));
             }
             // By default, show a loading spinner
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           },
         )
     );

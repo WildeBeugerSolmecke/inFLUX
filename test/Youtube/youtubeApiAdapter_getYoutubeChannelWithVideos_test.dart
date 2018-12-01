@@ -1,7 +1,7 @@
 import 'package:influx/config.dart';
-import 'package:influx/utility/Youtube/thumbnail_size.dart';
+import 'package:influx/utility/Youtube/model/thumbnail_size.dart';
 import 'package:influx/utility/Youtube/youtube_api_adapter.dart';
-import 'package:influx/utility/Youtube/youtube_channel_with_videos.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_with_videos.dart';
 import 'package:test_api/test_api.dart';
 
 import 'http_client_youtube_wbs_mock.dart';
@@ -14,7 +14,7 @@ void main() {
             httpClient: HttpClientYoutubeWbsMock(),
             apiKey: InFluxConfig.youtubeApiKey,
             channelId: "UCb5TfGtSgvNPVPQawfCFuAw",
-            maxResuls: 20
+            maxResults: 20
         );
 
     assert(youtubeData.channel.id == "UCb5TfGtSgvNPVPQawfCFuAw");

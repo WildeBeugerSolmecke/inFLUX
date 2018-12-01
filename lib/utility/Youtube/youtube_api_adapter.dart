@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:influx/utility/Youtube/thumbnail_size.dart';
-import 'package:influx/utility/Youtube/youtube_channel_with_videos.dart';
-import 'package:influx/utility/Youtube/youtube_channel_info.dart';
-import 'package:influx/utility/Youtube/youtube_video_info.dart';
+import 'package:influx/utility/Youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_with_videos.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_info.dart';
+import 'package:influx/utility/Youtube/model/youtube_video_info.dart';
 import 'package:meta/meta.dart';
 
 class YoutubeApiAdapter {
@@ -16,7 +16,7 @@ class YoutubeApiAdapter {
   Future<YoutubeChannelWithVideos> getYoutubeChannelAndVideos(
       {@required Client httpClient,
       @required final String channelId,
-      @required final String apiKey, final int maxResuls = 10}) async {
+      @required final String apiKey, final int maxResults = 10}) async {
     List responses = await Future.wait([
       getChannelInfo(
           httpClient: httpClient, channelId: channelId, apiKey: apiKey),

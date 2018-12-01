@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:influx/utility/Youtube/thumbnail_size.dart';
-import 'package:influx/utility/Youtube/youtube_channel_info.dart';
-import 'package:influx/utility/Youtube/youtube_video_info.dart';
+import 'package:influx/utility/Youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/Youtube/model/youtube_channel_info.dart';
+import 'package:influx/utility/Youtube/model/youtube_video_info.dart';
 
 class YoutubeVideoListItem extends StatelessWidget{
 
