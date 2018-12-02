@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:influx/widgets/RssFeedPage.dart';
-import 'package:influx/utility/RssFeedReader.dart';
+import 'package:influx/widgets/rss_feed_page.dart';
+import 'package:influx/utility/rss_feed_reader.dart';
 import 'package:influx/config.dart';
 
 void main() {
@@ -19,10 +19,7 @@ void main() {
         home: RssFeedPage(
             title: 'Test Widget',
             rssFeedReader: RssFeedReader(
-                url: InFluxConfig.rssFeedUrl, httpClient: mockHttpClient
-            )
-        )
-    );
+                url: InFluxConfig.rssFeedUrl, httpClient: mockHttpClient)));
 
     // pump the widget:
     await tester.runAsync(() async {

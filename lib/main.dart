@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
-import 'package:influx/widgets/HomePage.dart';
+import 'package:influx/widgets/home_page.dart';
 
 void main() => runApp(App());
 
