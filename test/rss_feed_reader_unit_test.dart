@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:webfeed/webfeed.dart';
-import 'package:influx/utility/RssFeedReader.dart';
+import 'package:influx/utility/rss_feed_reader.dart';
 
 void main() {
   test('RSS feed reader test', () async {

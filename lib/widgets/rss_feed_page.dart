@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:influx/config.dart';
-import 'package:influx/utility/RssFeedReader.dart';
+import 'package:influx/utility/rss_feed_reader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// A widget that displays contents from an RSS feed.
