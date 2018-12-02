@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 class InFluxConfig {
 
   // styling:
-  static final MaterialColor primaryColor = Colors.blue;
-  static final String title = 'inFLUX';
-  static final String appBarTitle = 'inFLUX';
+  static const MaterialColor primaryColor = Colors.blue;
+  static const String title = 'inFLUX';
+  static const String appBarTitle = 'inFLUX';
 
   //content:
-  static final String rssFeedUrl = 'http://www.tagesschau.de/xml/rss2';
+  static const String rssFeedUrl = 'http://rss.cnn.com/rss/edition.rss';
 
   static final String youtubeApiKey = "YOUR-API-KEY-HERE";
   static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
