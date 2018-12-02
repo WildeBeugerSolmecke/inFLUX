@@ -12,4 +12,6 @@ class InFluxConfig {
   //content:
   static const String rssFeedUrl = 'http://rss.cnn.com/rss/edition.rss';
 
+  static final String youtubeApiKey = "YOUR-API-KEY-HERE";
+  static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
 }
