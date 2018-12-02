@@ -10,13 +10,8 @@ class RssFeedReader {
   http.Client httpClient;
   static final defaultRssFeedParser = (xmlString) => RssFeed.parse(xmlString);
 
-  /// Default constructor.
-  RssFeedReader({this.url})
-      : rssFeedParser = defaultRssFeedParser,
-        httpClient = http.Client();
-
-  /// A secondary constructor that allows to override the default implementations.
-  RssFeedReader.build({@required this.url, rssFeedParser, httpClient})
+  /// A constructor that allows to override the default implementations.
+  RssFeedReader({@required this.url, rssFeedParser, httpClient})
       : rssFeedParser = rssFeedParser ?? defaultRssFeedParser,
         httpClient = httpClient ?? http.Client();
 

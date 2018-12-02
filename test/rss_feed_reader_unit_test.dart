@@ -17,7 +17,7 @@ void main() {
     ]);
 
     // create the RssFeedReader:
-    var rssFeedReader = RssFeedReader.build(
+    var rssFeedReader = RssFeedReader(
         url: 'http://www.awesometestfeed.org/feed',
         rssFeedParser: (s) => mockRssFeed,
         httpClient: mockHttpClient);
