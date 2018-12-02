@@ -12,4 +12,6 @@ class InFluxConfig {
   //content:
   static final String rssFeedUrl = 'http://www.tagesschau.de/xml/rss2';
 
+  static final String youtubeApiKey = "YOUR-API-KEY-HERE";
+  static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
 }
