@@ -1,33 +1,19 @@
 #!/bin/bash
 
-#set -x
-#
-#function get_influx_config_value_from_user {
-#    question=$1
-#    default_value=$2
-##echo "bla"
-#    echo -n "$question [$default_value]"
-#    read user_input
-#    final_value=""
-#
-#    if [ -z "$user_input" ]
-#    then
-#        final_value=$user_input
-#    else
-#        # return:
-#        echo $default_value
-#        return
-#    fi
-#}
-#
-#
-#use_rss_feed_widget=$(get_influx_config_value_from_user "$Q_WANT_TO_USE_X an 'RSS Feed Widget'?" "yes")
-#echo $use_rss_feed_widget
+echo -e "\n"
+echo    "############################################################"
+echo    "####                                                    ####"
+echo    "####      Welcome to the inFLUX App Wizard v0.0.1!      ####"
+echo    "####                                                    ####"
+echo    "####   You can customize your app by simply answering   ####"
+echo    "####   the questions below!                             ####"
+echo    "####                                                    ####"
+echo -e "############################################################\n\n"
 
 flutter_binary=$(which flutter)
-flutter_bin_env_set=$?
+is_flutter_bin_env_var_set=$?
 
-if [[ "$flutter_bin_env_set" -eq "0" ]]
+if [[ "$is_flutter_bin_env_var_set" -eq "0" ]]
 then
     flutter_bin_dir=$(dirname $flutter_binary)
     dart_binary=$flutter_bin_dir"/cache/dart-sdk/bin/dart"
