@@ -24,9 +24,9 @@ void main() {
         apiKey: InFluxConfig.youtubeApiKey);
 
     assert(youtubeChannelInfo.urlIdentifier.toLowerCase() == "kanzleiwbs");
-    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailSize.SMALL));
-    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailSize.MEDIUM));
-    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailSize.LARGE));
+    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailResolution.LOW));
+    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailResolution.MEDIUM));
+    assert(youtubeChannelInfo.thumbnailUrls.containsKey(ThumbnailResolution.HIGH));
     assert(youtubeChannelInfo.id == "UCb5TfGtSgvNPVPQawfCFuAw");
     assert(youtubeChannelInfo.title == "Kanzlei WBS");
   });
@@ -43,7 +43,7 @@ void main() {
     assert(youtubeData.channel.id == "UCb5TfGtSgvNPVPQawfCFuAw");
     assert(youtubeData.channel.title == "Kanzlei WBS");
     assert(youtubeData.videos[0].description != null);
-    assert(youtubeData.videos[0].thumbnailUrls.containsKey(ThumbnailSize.LARGE));
+    assert(youtubeData.videos[0].thumbnailUrls.containsKey(ThumbnailResolution.HIGH));
     assert(youtubeData.videos.length == 20);
   });
 
@@ -57,7 +57,7 @@ void main() {
 
     assert(videos.length == 20);
     assert(videos[0].id != null);
-    assert(videos[0].thumbnailUrls.containsKey(ThumbnailSize.SMALL));
+    assert(videos[0].thumbnailUrls.containsKey(ThumbnailResolution.LOW));
     assert(videos[0].publishedAt != null);
     assert(videos[0].description != null);
   });

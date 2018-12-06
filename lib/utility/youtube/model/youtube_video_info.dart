@@ -6,7 +6,7 @@ class YoutubeVideoInfo {
   String title;
   String description;
   DateTime publishedAt;
-  Map<ThumbnailSize, String> thumbnailUrls = new Map();
+  Map<ThumbnailResolution, String> thumbnailUrls = new Map();
 
   YoutubeVideoInfo(
       {@required this.id,

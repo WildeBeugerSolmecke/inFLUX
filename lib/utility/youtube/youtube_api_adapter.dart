@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:influx/utility/youtube/api_response_dtos/channel_info_response.dart';
+import 'package:influx/utility/youtube/api_response_dtos/video_list_response.dart';
 import 'package:influx/utility/youtube/model/thumbnail_size.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
@@ -38,25 +40,27 @@ class YoutubeApiAdapter {
     final url =
         "$YOUTUBE_CHANNEL_API_URL?part=contentDetails,snippet&id=$channelId&key=$apiKey";
 
-    var response = await get(url);
+    var response = await httpClient.get(url);
+
+    if (response.statusCode != 200)
+      throw new Exception(
+          "status code for request $url was ${response.statusCode} but expected 200");
+
     dynamic body = json.decode(response.body);
+    var youtubeChannelInfo = ChannelInfoResponse.fromJson(body);
     // take first element
-    dynamic channel = body['items'][0];
-    String channelTitle = channel['snippet']['title'];
-    String description = channel['snippet']['description'];
-    String urlIdentifier = channel['snippet']['customUrl'];
-    String id = channel['id'];
+    var channel = youtubeChannelInfo.items[0];
+    String channelTitle = channel.snippet.title;
+    String description = channel.snippet.description;
+    String urlIdentifier = channel.snippet.customUrl;
+    String id = channel.id;
 
     // thumbnails
-    Map<ThumbnailSize, String> thumbnails = Map();
-    String smallThumbnail = channel['snippet']['thumbnails']['default']['url'];
-    thumbnails[ThumbnailSize.SMALL] = smallThumbnail;
+    Map<ThumbnailResolution, String> thumbnails = Map();
 
-    String mediumThumbnail = channel['snippet']['thumbnails']['medium']['url'];
-    thumbnails[ThumbnailSize.MEDIUM] = mediumThumbnail;
-
-    String largeThumbnail = channel['snippet']['thumbnails']['high']['url'];
-    thumbnails[ThumbnailSize.LARGE] = largeThumbnail;
+    thumbnails[ThumbnailResolution.LOW] = channel.snippet.thumbnails.low.url;
+    thumbnails[ThumbnailResolution.MEDIUM] =  channel.snippet.thumbnails.medium.url;
+    thumbnails[ThumbnailResolution.HIGH] = channel.snippet.thumbnails.high.url;
 
     return YoutubeChannelInfo(
         id: id,
@@ -74,24 +78,30 @@ class YoutubeApiAdapter {
     final url =
         "$YOUTUBE_SEARCH_API_URL?key=$apiKey&channelId=$channelId&part=snippet,id&order=date&maxResults=20&type=video";
 
-    var response = await get(url);
+    var response = await httpClient.get(url);
+
+    if (response.statusCode != 200)
+      throw new Exception(
+          "status code for request $url was ${response.statusCode} but expected 200");
 
     var body = json.decode(response.body);
-    List videosJson = body["items"];
+    VideoListResponse videoList = VideoListResponse.fromJson(body);
 
-    return videosJson.map((videoRaw) {
-      String id = videoRaw["id"]["videoId"];
-      String title = videoRaw["snippet"]["title"];
-      String description = videoRaw["snippet"]["description"];
-      DateTime publishedAt = DateTime.parse(videoRaw["snippet"]["publishedAt"]);
+    var videos = videoList.items;
 
-      Map<ThumbnailSize, String> thumbnails = new Map();
-      thumbnails[ThumbnailSize.SMALL] =
-          videoRaw["snippet"]["thumbnails"]["default"]["url"];
-      thumbnails[ThumbnailSize.MEDIUM] =
-          videoRaw["snippet"]["thumbnails"]["medium"]["url"];
-      thumbnails[ThumbnailSize.LARGE] =
-          videoRaw["snippet"]["thumbnails"]["high"]["url"];
+    return videos.map((video) {
+      String id = video.id.videoId;
+      String title = video.snippet.title;
+      String description = video.snippet.description;
+      DateTime publishedAt = DateTime.parse(video.snippet.publishedAt);
+
+      Map<ThumbnailResolution, String> thumbnails = new Map();
+      thumbnails[ThumbnailResolution.LOW] =
+          video.snippet.thumbnails.low.url;
+      thumbnails[ThumbnailResolution.MEDIUM] =
+          video.snippet.thumbnails.medium.url;
+      thumbnails[ThumbnailResolution.HIGH] =
+          video.snippet.thumbnails.high.url;
 
       return YoutubeVideoInfo(
           id: id,

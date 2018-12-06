@@ -5,7 +5,7 @@ class YoutubeChannelInfo {
   String title;
   String id;
   String description;
-  Map<ThumbnailSize, String> thumbnailUrls;
+  Map<ThumbnailResolution, String> thumbnailUrls;
   String urlIdentifier;
 
   YoutubeChannelInfo(
