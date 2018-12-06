@@ -3,31 +3,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:influx/widgets/rss_feed_page.dart';
-import 'package:influx/utility/rss_feed_reader.dart';
+import 'package:influx/utility/rss_feed/rss_feed_reader.dart';
 import 'package:influx/config.dart';
 
 void main() {
   testWidgets('RssFeedReader widget test', (WidgetTester tester) async {
-    // a mock HTTP client:
-    var mockHttpClient = MockClient((request) async {
-      String body = mockRssResponse;
-      return Response(body, 200);
+    tester.runAsync(() async {
+      // a mock HTTP client:
+      var mockHttpClient = MockClient((request) async {
+        String body = mockRssResponse;
+        return Response(body, 200);
+      });
+
+      // wrap the RssFeedReader widget with a MaterialApp in order to have a MediaQuery object:
+      var testWidget = MaterialApp(
+          home: RssFeedPage(
+              title: 'Test Widget',
+              rssFeedReader: RssFeedReader(
+                  url: InFluxConfig.rssFeedUrl, httpClient: mockHttpClient)));
+
+      // pump the widget:
+      await tester.runAsync(() async {
+        await tester.pumpWidget(testWidget);
+      });
+
+      // verify that the RSS feed items are rendered:
+      expect(find.text('RSS feed item one'), findsOneWidget);
     });
-
-    // wrap the RssFeedReader widget with a MaterialApp in order to have a MediaQuery object:
-    var testWidget = MaterialApp(
-        home: RssFeedPage(
-            title: 'Test Widget',
-            rssFeedReader: RssFeedReader(
-                url: InFluxConfig.rssFeedUrl, httpClient: mockHttpClient)));
-
-    // pump the widget:
-    await tester.runAsync(() async {
-      await tester.pumpWidget(testWidget);
-    });
-
-    // verify that the RSS feed items are rendered:
-    // TODO: expect(find.text('RSS feed item one'), findsOneWidget);
   });
 }
 
