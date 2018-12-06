@@ -38,7 +38,7 @@ class YoutubeApiAdapter {
     final url =
         "$YOUTUBE_CHANNEL_API_URL?part=contentDetails,snippet&id=$channelId&key=$apiKey";
 
-    var response = await get(url);
+    var response = await httpClient.get(url);
     dynamic body = json.decode(response.body);
     // take first element
     dynamic channel = body['items'][0];
@@ -74,7 +74,7 @@ class YoutubeApiAdapter {
     final url =
         "$YOUTUBE_SEARCH_API_URL?key=$apiKey&channelId=$channelId&part=snippet,id&order=date&maxResults=20&type=video";
 
-    var response = await get(url);
+    var response = await httpClient.get(url);
 
     var body = json.decode(response.body);
     List videosJson = body["items"];
