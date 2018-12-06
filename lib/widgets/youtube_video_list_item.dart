@@ -31,7 +31,7 @@ class YoutubeVideoListItem extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
                   child: Image.network(
-                      this.videoInfo.thumbnailUrls[ThumbnailSize.LARGE],
+                      this.videoInfo.thumbnailUrls[ThumbnailResolution.HIGH],
                       fit: BoxFit.contain),
                 ),
               ),
@@ -45,7 +45,7 @@ class YoutubeVideoListItem extends StatelessWidget {
                         child: Image.network(
                             this
                                 .channelInfo
-                                .thumbnailUrls[ThumbnailSize.MEDIUM],
+                                .thumbnailUrls[ThumbnailResolution.MEDIUM],
                             width: 90,
                             height: 90)),
                     SizedBox(width: 10.0),
