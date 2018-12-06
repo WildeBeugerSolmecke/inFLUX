@@ -1,5 +1,5 @@
-enum ThumbnailSize{
-  SMALL,
+enum ThumbnailResolution{
+  LOW,
   MEDIUM,
-  LARGE
+  HIGH
 }
