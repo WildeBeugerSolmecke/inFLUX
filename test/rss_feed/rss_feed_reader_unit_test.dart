@@ -27,6 +27,21 @@ void main() {
     var result = await rssFeedReader.fetchRssPosts(postCount);
     expect(result.length, postCount);
   });
+
+  test('RSS feed reader: DateTime formatting test', () async {
+    final String dateString1 = 'Fri, 07 Dec 2018 15:49:56 GMT';
+    final String dateString2 = 'Sat, 17 Nov 2018 05:50:14 GMT';
+
+    // create the RssFeedReader:
+    var rssFeedReader = RssFeedReader(
+        url: null,
+        rssFeedParser: (s) => MockRssFeed(),
+        httpClient: null);
+
+    // call the format() method:
+    var date1 = rssFeedReader.parseRssDate(dateString1);
+    expect(date1.year, 2018);
+  });
 }
 
 class MockRssFeed extends Mock implements RssFeed {}

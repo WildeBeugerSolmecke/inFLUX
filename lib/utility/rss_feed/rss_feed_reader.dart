@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:webfeed/webfeed.dart';
 import 'dart:math';
+import 'package:intl/intl.dart';
 
 /// A RSS feed reader helper class.
 class RssFeedReader {
@@ -23,10 +24,16 @@ class RssFeedReader {
     var n = min(feed.items.length, maxItems);
     return feed.items
         .sublist(0, n)
-        .map((rssItem) => RssPost(title: rssItem.title, url: rssItem.link))
+        .map((rssItem) => RssPost(title: rssItem.title, url: rssItem.link, pubDate: DateTime.parse(rssItem.pubDate)))
         .toList();
 
     // TODO: add some kind of pagination!
+  }
+
+  DateTime parseRssDate(String dateString) {
+    // TODO: extract substring(s)!
+    var date = DateTime.parse(dateString);
+    return date;
   }
 }
 
@@ -35,6 +42,7 @@ class RssFeedReader {
 class RssPost {
   final String title;
   final String url;
+  final DateTime pubDate;
 
-  RssPost({@required this.title, this.url});
+  RssPost({@required this.title, this.url, this.pubDate});
 }

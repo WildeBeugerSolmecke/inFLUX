@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:influx/config.dart';
 import 'package:influx/utility/rss_feed/rss_feed_reader.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
@@ -42,6 +43,7 @@ class _RssFeedState extends State<RssFeedPage> {
                     .map<ListTile>((rssPost) => ListTile(
                           leading: Icon(Icons.arrow_right),
                           title: rssPostTitleToText(rssPost),
+                          subtitle: pubDate(rssPost),
                           onTap: rssPostUrlToTapCallback(rssPost),
                         ))
                     .toList();
@@ -63,6 +65,12 @@ class _RssFeedState extends State<RssFeedPage> {
   Text rssPostTitleToText(RssPost post) {
     // TODO: Trim string to fit a single line!
     return Text(post.title);
+  }
+
+  Text pubDate(RssPost post) {
+    var formatter = DateFormat('dd.MM.yyyy');
+    var date = formatter.format(post.pubDate);
+    return Text(date);
   }
 
   GestureTapCallback rssPostUrlToTapCallback(RssPost post) {
