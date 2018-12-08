@@ -7,8 +7,8 @@ import 'package:intl/intl.dart';
 /// A RSS feed reader helper class.
 class RssFeedReader {
   final String url;
-  RssFeed Function(String xmlString) rssFeedParser;
-  http.Client httpClient;
+  final RssFeed Function(String xmlString) rssFeedParser;
+  final http.Client httpClient;
   static final defaultRssFeedParser = (xmlString) => RssFeed.parse(xmlString);
 
   /// A constructor that allows to override the default implementations.
@@ -18,22 +18,34 @@ class RssFeedReader {
 
   /// Fetches (a maximum of 'maxItems') RSS feed posts. Returns a future!
   Future<List<RssPost>> fetchRssPosts(int maxItems) async {
-    var response = await httpClient.get(url);
-    var feed = rssFeedParser(response.body);
+    final response = await httpClient.get(url);
+    final feed = rssFeedParser(response.body);
 
-    var n = min(feed.items.length, maxItems);
+    final n = min(feed.items.length, maxItems);
     return feed.items
         .sublist(0, n)
-        .map((rssItem) => RssPost(title: rssItem.title, url: rssItem.link, pubDate: DateTime.parse(rssItem.pubDate)))
+        .map((rssItem) => RssPost(
+            title: rssItem.title,
+            url: rssItem.link,
+            pubDate: parseRssDate(rssItem.pubDate)))
         .toList();
 
     // TODO: add some kind of pagination!
   }
 
+  /// Parses a common RSS feed date (e.g. 'Sat, 17 Nov 2018 05:50:14 GMT')
+  /// to a valid Dart DateTime object.
   DateTime parseRssDate(String dateString) {
-    // TODO: extract substring(s)!
-    var date = DateTime.parse(dateString);
-    return date;
+    if (dateString == null || dateString.isEmpty) {
+      return null;
+    } else {
+      final length = dateString.length;
+      final substr = dateString.substring(5).substring(0, length - 5 - 4);
+
+      // formatter for e.g.:     '07 Dec 2018 15:49:56'
+      final formatter = DateFormat('dd MMM yyyy HH:mm:ss');
+      return formatter.parse(substr);
+    }
   }
 }
 

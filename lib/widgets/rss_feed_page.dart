@@ -20,7 +20,8 @@ class RssFeedPage extends StatefulWidget {
 }
 
 class _RssFeedState extends State<RssFeedPage> {
-  RssFeedReader _rssFeedReader;
+  final RssFeedReader _rssFeedReader;
+  final formatter = DateFormat('dd.MM.yyyy HH:mm:ss');
 
   _RssFeedState({rssFeedReader})
       : _rssFeedReader =
@@ -29,7 +30,7 @@ class _RssFeedState extends State<RssFeedPage> {
   @override
   Widget build(BuildContext context) {
     final maxRssFeedItems = 20;
-    var rssPosts = _rssFeedReader.fetchRssPosts(maxRssFeedItems);
+    final rssPosts = _rssFeedReader.fetchRssPosts(maxRssFeedItems);
 
     return Scaffold(
         appBar: AppBar(
@@ -39,7 +40,7 @@ class _RssFeedState extends State<RssFeedPage> {
           child: FutureBuilder(
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                var listItems = snapshot.data
+                final listItems = snapshot.data
                     .map<ListTile>((rssPost) => ListTile(
                           leading: Icon(Icons.arrow_right),
                           title: rssPostTitleToText(rssPost),
@@ -68,8 +69,7 @@ class _RssFeedState extends State<RssFeedPage> {
   }
 
   Text pubDate(RssPost post) {
-    var formatter = DateFormat('dd.MM.yyyy');
-    var date = formatter.format(post.pubDate);
+    final date = formatter.format(post.pubDate);
     return Text(date);
   }
 

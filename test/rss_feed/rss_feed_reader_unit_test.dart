@@ -29,18 +29,20 @@ void main() {
   });
 
   test('RSS feed reader: DateTime formatting test', () async {
-    final String dateString1 = 'Fri, 07 Dec 2018 15:49:56 GMT';
-    final String dateString2 = 'Sat, 17 Nov 2018 05:50:14 GMT';
-
-    // create the RssFeedReader:
     var rssFeedReader = RssFeedReader(
-        url: null,
-        rssFeedParser: (s) => MockRssFeed(),
-        httpClient: null);
+        url: null, rssFeedParser: (s) => MockRssFeed(), httpClient: null);
 
-    // call the format() method:
+    final String dateString1 = 'Fri, 07 Dec 2018 15:49:56 GMT';
     var date1 = rssFeedReader.parseRssDate(dateString1);
     expect(date1.year, 2018);
+    expect(date1.month, DateTime.december);
+    expect(date1.day, 7);
+
+    final String dateString2 = 'Sat, 17 Nov 2017 05:50:14 GMT';
+    var date2 = rssFeedReader.parseRssDate(dateString2);
+    expect(date2.year, 2017);
+    expect(date2.month, DateTime.november);
+    expect(date2.day, 17);
   });
 }
 
