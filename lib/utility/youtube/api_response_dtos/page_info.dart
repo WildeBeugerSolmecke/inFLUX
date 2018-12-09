@@ -1,18 +1,15 @@
-class PageInfo {
-  int totalResults;
-  int resultsPerPage;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  PageInfo({this.totalResults, this.resultsPerPage});
+part 'page_info.g.dart';
 
-  PageInfo.fromJson(Map<String, dynamic> json) {
-    totalResults = json['totalResults'];
-    resultsPerPage = json['resultsPerPage'];
-  }
+abstract class PageInfo implements Built<PageInfo, PageInfoBuilder>{
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['totalResults'] = this.totalResults;
-    data['resultsPerPage'] = this.resultsPerPage;
-    return data;
-  }
+  static Serializer<PageInfo> get serializer => _$pageInfoSerializer;
+
+  int get totalResults;
+  int get resultsPerPage;
+
+  PageInfo._();
+  factory PageInfo([updates(PageInfoBuilder b)]) =_$PageInfo;
 }

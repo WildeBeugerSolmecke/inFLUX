@@ -1,18 +1,15 @@
-class Localized {
-  String title;
-  String description;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  Localized({this.title, this.description});
+part 'localized.g.dart';
 
-  Localized.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    description = json['description'];
-  }
+abstract class Localized implements Built<Localized, LocalizedBuilder>{
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['description'] = this.description;
-    return data;
-  }
+  static Serializer<Localized> get serializer => _$localizedSerializer;
+
+  String get title;
+  String get description;
+
+  Localized._();
+  factory Localized([updates(LocalizedBuilder b)]) = _$Localized;
 }

@@ -1,21 +1,16 @@
-class Medium {
-  String url;
-  int width;
-  int height;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  Medium({this.url, this.width, this.height});
+part 'medium.g.dart';
 
-  Medium.fromJson(Map<String, dynamic> json) {
-    url = json['url'];
-    width = json['width'];
-    height = json['height'];
-  }
+abstract class Medium implements Built<Medium, MediumBuilder>{
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    return data;
-  }
+  static Serializer<Medium> get serializer => _$mediumSerializer;
+
+  String get url;
+  int get width;
+  int get height;
+
+  Medium._();
+  factory Medium([updates(MediumBuilder b)]) =_$Medium;
 }
