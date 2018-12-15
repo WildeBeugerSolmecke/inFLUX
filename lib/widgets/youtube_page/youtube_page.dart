@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/config.dart';
-import 'package:influx/widgets/youtube_video_list_item.dart';
+import 'package:influx/widgets/youtube_page/youtube_video_list_item.dart';
 
 class YoutubePage extends StatelessWidget {
   final String title;
