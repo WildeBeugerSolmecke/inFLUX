@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 import 'package:influx/utility/youtube/api_response_dtos/channel_info_response.dart';
 import 'package:influx/utility/youtube/api_response_dtos/serializers.dart';
 import 'package:influx/utility/youtube/api_response_dtos/video_list_response.dart';
-import 'package:influx/utility/youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';

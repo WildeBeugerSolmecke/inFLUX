@@ -1,4 +1,4 @@
-import 'package:influx/utility/youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:meta/meta.dart';
 
 class YoutubeVideoInfo {
