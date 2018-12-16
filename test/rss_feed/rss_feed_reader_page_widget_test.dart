@@ -18,7 +18,6 @@ void main() {
       // wrap the RssFeedReader widget with a MaterialApp in order to have a MediaQuery object:
       var testWidget = MaterialApp(
           home: RssFeedPage(
-              title: 'Test Widget',
               rssFeedReader: RssFeedReader(
                   url: InFluxConfig.rssFeedUrl, httpClient: mockHttpClient)));
 

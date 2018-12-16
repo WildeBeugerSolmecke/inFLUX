@@ -6,12 +6,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
-  final String title;
 
   // TODO: this should not be injected manually but via a DI framework:
   final RssFeedReader rssFeedReader;
 
-  RssFeedPage({@required this.title, this.rssFeedReader, Key key})
+  const RssFeedPage({this.rssFeedReader, Key key})
       : super(key: key);
 
   @override
@@ -30,11 +29,8 @@ class _RssFeedState extends State<RssFeedPage> {
     final maxRssFeedItems = 20;
     var rssPosts = _rssFeedReader.fetchRssPosts(maxRssFeedItems);
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
+    return Material(
+        child: Center(
           child: FutureBuilder(
             builder: (context, snapshot) {
               if (snapshot.hasData) {
