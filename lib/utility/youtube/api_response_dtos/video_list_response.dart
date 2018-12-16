@@ -1,40 +1,24 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:influx/utility/youtube/api_response_dtos/video_item.dart';
 import 'package:influx/utility/youtube/api_response_dtos/page_info.dart';
 
-class VideoListResponse {
-  String kind;
-  String etag;
-  String nextPageToken;
-  String regionCode;
-  PageInfo pageInfo;
-  List<VideoItem> items;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  VideoListResponse({this.kind, this.etag, this.nextPageToken, this.regionCode, this.pageInfo, this.items});
+part 'video_list_response.g.dart';
 
-  VideoListResponse.fromJson(Map<String, dynamic> json) {
-    kind = json['kind'];
-    etag = json['etag'];
-    nextPageToken = json['nextPageToken'];
-    regionCode = json['regionCode'];
-    pageInfo = json['pageInfo'] != null ? new PageInfo.fromJson(json['pageInfo']) : null;
-    if (json['items'] != null) {
-      items = new List<VideoItem>();
-      json['items'].forEach((v) { items.add(new VideoItem.fromJson(v)); });
-    }
-  }
+abstract class VideoListResponse implements Built<VideoListResponse, VideoListResponseBuilder>{
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['kind'] = this.kind;
-    data['etag'] = this.etag;
-    data['nextPageToken'] = this.nextPageToken;
-    data['regionCode'] = this.regionCode;
-    if (this.pageInfo != null) {
-      data['pageInfo'] = this.pageInfo.toJson();
-    }
-    if (this.items != null) {
-      data['items'] = this.items.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  static Serializer<VideoListResponse> get serializer => _$videoListResponseSerializer;
+
+  String get kind;
+  String get etag;
+  String get nextPageToken;
+  String get regionCode;
+  PageInfo get pageInfo;
+  BuiltList<VideoItem> get items;
+
+  VideoListResponse._();
+  factory VideoListResponse([updates(VideoListResponseBuilder b)]) =_$VideoListResponse;
+
 }

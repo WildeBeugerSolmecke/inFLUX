@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:influx/utility/youtube/datetime_converter.dart';
-import 'package:influx/utility/youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
 

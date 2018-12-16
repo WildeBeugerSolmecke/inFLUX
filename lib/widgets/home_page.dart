@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/rss_feed_page.dart';
-import './youtube_page.dart';
+import 'package:influx/widgets/youtube_page/youtube_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// The home page (that get's displayed on app start).

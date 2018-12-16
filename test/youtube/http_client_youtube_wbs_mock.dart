@@ -6,14 +6,6 @@ import 'dart:convert';
 
 class HttpClientYoutubeWbsMock extends Mock implements Client {
   HttpClientYoutubeWbsMock() {
-
-    String jsonAsString = YoutubeResponses.wbsVideoInfos;
-    final data = json.encode(jsonAsString);
-    jsonAsString = json.decode(data);
-
-    print(jsonAsString);
-
-
     when(this.get(contains("https://www.googleapis.com/youtube/v3/channels")))
         .thenAnswer((_) async => Response(YoutubeResponses.wbsChannelInfo, 200, headers: {'content-type': 'application/json; charset=utf-8'}));
     when(this.get(contains("https://www.googleapis.com/youtube/v3/search")))
