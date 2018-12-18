@@ -65,9 +65,8 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(
                 // TODO: The routes should be generated as well (see above)!
-                builder: (context) => YoutubePage(
-                      title: widget.title,
-                    )),
+                builder: (context) => YoutubePage()
+            )
           );
           break;
         case 2:
@@ -75,9 +74,7 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(
                 // TODO: The routes should be generated as well (see above)!
-                builder: (context) => RssFeedPage(
-                      title: widget.title,
-                    )),
+                builder: (context) => RssFeedPage()),
           );
         // TODO: Don't navigate to a new page via "MaterialPageRoute" (which
         // TODO: creates an ugly arrow in the upper left corner), rather change

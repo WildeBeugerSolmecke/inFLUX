@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
+import 'package:influx/widgets/base_page.dart';
 import 'package:influx/widgets/home_page.dart';
 
 void main() => runApp(App());
@@ -13,7 +14,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: InFluxConfig.primaryColor,
       ),
-      home: HomePage(),
+      home: BasePage(),
     );
   }
 }
