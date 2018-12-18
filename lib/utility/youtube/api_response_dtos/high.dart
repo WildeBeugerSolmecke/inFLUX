@@ -1,21 +1,15 @@
-class High {
-  String url;
-  int width;
-  int height;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  High({this.url, this.width, this.height});
+part 'high.g.dart';
 
-  High.fromJson(Map<String, dynamic> json) {
-    url = json['url'];
-    width = json['width'];
-    height = json['height'];
-  }
+abstract class High implements Built<High, HighBuilder>{
+  static Serializer<High> get serializer => _$highSerializer;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['url'] = this.url;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    return data;
-  }
+  String get url;
+  int get width;
+  int get height;
+
+  High._();
+  factory High([updates(HighBuilder b)]) =_$High;
 }

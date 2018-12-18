@@ -1,18 +1,16 @@
-class Id {
-  String kind;
-  String videoId;
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
-  Id({this.kind, this.videoId});
+part 'id.g.dart';
 
-  Id.fromJson(Map<String, dynamic> json) {
-    kind = json['kind'];
-    videoId = json['videoId'];
-  }
+abstract class Id implements Built<Id, IdBuilder>{
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['kind'] = this.kind;
-    data['videoId'] = this.videoId;
-    return data;
-  }
+  static Serializer<Id> get serializer => _$idSerializer;
+
+  String get kind;
+  String get videoId;
+
+  Id._();
+  factory Id([updates(IdBuilder b)]) =_$Id;
+
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:influx/config.dart';
-import 'package:influx/utility/youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';

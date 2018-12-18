@@ -1,31 +1,21 @@
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 import 'package:influx/utility/youtube/api_response_dtos/default.dart';
 import 'package:influx/utility/youtube/api_response_dtos/high.dart';
 import 'package:influx/utility/youtube/api_response_dtos/medium.dart';
 
-class Thumbnails {
-  Default low;
-  Medium medium;
-  High high;
+part 'thumbnails.g.dart';
 
-  Thumbnails({this.low, this.medium, this.high});
+abstract class Thumbnails implements Built<Thumbnails, ThumbnailsBuilder> {
 
-  Thumbnails.fromJson(Map<String, dynamic> json) {
-    low = json['default'] != null ? new Default.fromJson(json['default']) : null;
-    medium = json['medium'] != null ? new Medium.fromJson(json['medium']) : null;
-    high = json['high'] != null ? new High.fromJson(json['high']) : null;
-  }
+  static Serializer<Thumbnails> get serializer => _$thumbnailsSerializer;
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.low != null) {
-      data['default'] = this.low.toJson();
-    }
-    if (this.medium != null) {
-    data['medium'] = this.medium.toJson();
-    }
-    if (this.high != null) {
-    data['high'] = this.high.toJson();
-    }
-    return data;
-  }
+  @BuiltValueField(wireName: 'default')
+  Default get low;
+  Medium get medium;
+  High get high;
+
+  Thumbnails._();
+  factory Thumbnails([updates(ThumbnailsBuilder b)]) = _$Thumbnails;
+
 }

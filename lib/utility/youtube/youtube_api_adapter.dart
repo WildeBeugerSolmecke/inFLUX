@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:influx/utility/youtube/api_response_dtos/channel_info_response.dart';
+import 'package:influx/utility/youtube/api_response_dtos/serializers.dart';
 import 'package:influx/utility/youtube/api_response_dtos/video_list_response.dart';
-import 'package:influx/utility/youtube/model/thumbnail_size.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
@@ -47,9 +48,9 @@ class YoutubeApiAdapter {
           "status code for request $url was ${response.statusCode} but expected 200");
 
     dynamic body = json.decode(response.body);
-    var youtubeChannelInfo = ChannelInfoResponse.fromJson(body);
+    var channelInfoResponse = serializers.deserializeWith(ChannelInfoResponse.serializer, body);
     // take first element
-    var channel = youtubeChannelInfo.items[0];
+    var channel = channelInfoResponse.items[0];
     String channelTitle = channel.snippet.title;
     String description = channel.snippet.description;
     String urlIdentifier = channel.snippet.customUrl;
@@ -85,7 +86,7 @@ class YoutubeApiAdapter {
           "status code for request $url was ${response.statusCode} but expected 200");
 
     var body = json.decode(response.body);
-    VideoListResponse videoList = VideoListResponse.fromJson(body);
+    var videoList = serializers.deserializeWith(VideoListResponse.serializer, body);
 
     var videos = videoList.items;
 

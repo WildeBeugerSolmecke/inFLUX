@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/rss_feed_page.dart';
-import './youtube_page.dart';
+import 'package:influx/widgets/youtube_page/youtube_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// The home page (that get's displayed on app start).
@@ -65,9 +65,8 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(
                 // TODO: The routes should be generated as well (see above)!
-                builder: (context) => YoutubePage(
-                      title: widget.title,
-                    )),
+                builder: (context) => YoutubePage()
+            )
           );
           break;
         case 2:
@@ -75,9 +74,7 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(
                 // TODO: The routes should be generated as well (see above)!
-                builder: (context) => RssFeedPage(
-                      title: widget.title,
-                    )),
+                builder: (context) => RssFeedPage()),
           );
         // TODO: Don't navigate to a new page via "MaterialPageRoute" (which
         // TODO: creates an ugly arrow in the upper left corner), rather change

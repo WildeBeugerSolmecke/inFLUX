@@ -7,7 +7,7 @@ class DateTimeConverter {
       return "some seconds ago";
     }
     else if(duration.inMinutes < 60){
-      if(duration.inMinutes==1) return '1 minutes ago';
+      if(duration.inMinutes==1) return '1 minute ago';
       return '${duration.inMinutes} minutes ago';
     }
     else if(duration.inHours < 24){

@@ -1,37 +1,22 @@
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 import 'package:influx/utility/youtube/api_response_dtos/localized.dart';
 import 'package:influx/utility/youtube/api_response_dtos/thumbnails.dart';
 
-class ChannelSnippet {
-  String title;
-  String description;
-  String customUrl;
-  String publishedAt;
-  Thumbnails thumbnails;
-  Localized localized;
+part 'channel_snippet.g.dart';
 
-  ChannelSnippet({this.title, this.description, this.customUrl, this.publishedAt, this.thumbnails, this.localized});
 
-  ChannelSnippet.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    description = json['description'];
-    customUrl = json['customUrl'];
-    publishedAt = json['publishedAt'];
-    thumbnails = json['thumbnails'] != null ? new Thumbnails.fromJson(json['thumbnails']) : null;
-    localized = json['localized'] != null ? new Localized.fromJson(json['localized']) : null;
-  }
+abstract class ChannelSnippet implements Built<ChannelSnippet, ChannelSnippetBuilder> {
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['customUrl'] = this.customUrl;
-    data['publishedAt'] = this.publishedAt;
-    if (this.thumbnails != null) {
-      data['thumbnails'] = this.thumbnails.toJson();
-    }
-    if (this.localized != null) {
-      data['localized'] = this.localized.toJson();
-    }
-    return data;
-  }
+  static Serializer<ChannelSnippet> get serializer => _$channelSnippetSerializer;
+
+  String get title;
+  String get description;
+  String get customUrl;
+  String get publishedAt;
+  Thumbnails get thumbnails;
+  Localized get localized;
+
+  ChannelSnippet._();
+  factory ChannelSnippet([updates(ChannelSnippetBuilder b)]) =_$ChannelSnippet;
 }
