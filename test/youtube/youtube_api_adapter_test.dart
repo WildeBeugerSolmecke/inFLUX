@@ -13,13 +13,10 @@ class MockHttpClient extends Mock implements Client {}
 
 void main() {
   test('fetching wbs channel info from youtube api', () async {
-    // mock youtube api
-    Client httpClient = HttpClientYoutubeWbsMock();
 
-    YoutubeApiAdapter youtubeApiAdapter = new YoutubeApiAdapter();
+    YoutubeApiAdapter youtubeApiAdapter = new YoutubeApiAdapter(client: HttpClientYoutubeWbsMock());
     YoutubeChannelInfo youtubeChannelInfo =
     await youtubeApiAdapter.getChannelInfo(
-        httpClient: httpClient,
         channelId: "UCb5TfGtSgvNPVPQawfCFuAw",
         apiKey: InFluxConfig.youtubeApiKey);
 
@@ -32,10 +29,9 @@ void main() {
   });
 
   test('fetching wbs channel data and the last 20 videos', () async {
-    YoutubeApiAdapter youtubeApiAdapter = new YoutubeApiAdapter();
+    YoutubeApiAdapter youtubeApiAdapter = new YoutubeApiAdapter(client: HttpClientYoutubeWbsMock());
     YoutubeChannelWithVideos youtubeData =
     await youtubeApiAdapter.getYoutubeChannelAndVideos(
-        httpClient: HttpClientYoutubeWbsMock(),
         apiKey: InFluxConfig.youtubeApiKey,
         channelId: "UCb5TfGtSgvNPVPQawfCFuAw",
         maxResults: 20);
@@ -48,9 +44,8 @@ void main() {
   });
 
   test('fetching the last 20 video from wbs youtube channel', () async {
-    YoutubeApiAdapter youtubeApiAdapter = YoutubeApiAdapter();
+    YoutubeApiAdapter youtubeApiAdapter = YoutubeApiAdapter(client: HttpClientYoutubeWbsMock());
     List<YoutubeVideoInfo> videos = await youtubeApiAdapter.getVideos(
-        httpClient: HttpClientYoutubeWbsMock(),
         apiKey: InFluxConfig.youtubeApiKey,
         channelId: InFluxConfig.youtubeChannelId,
         maxResults: 20);

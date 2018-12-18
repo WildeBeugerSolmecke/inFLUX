@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:influx/config.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
@@ -10,7 +9,6 @@ class YoutubePageRedesign extends StatelessWidget{
   Widget build(BuildContext context) {
     return FutureBuilder<YoutubeChannelWithVideos>(
       future: YoutubeApiAdapter().getYoutubeChannelAndVideos(
-          httpClient: Client(),
           channelId: InFluxConfig.youtubeChannelId,
           apiKey: InFluxConfig.youtubeApiKey),
       builder: (context, snapshot) {
