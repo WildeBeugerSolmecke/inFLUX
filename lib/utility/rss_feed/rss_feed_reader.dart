@@ -19,8 +19,13 @@ class RssFeedReader {
       : rssFeedParser = rssFeedParser ?? defaultRssFeedParser,
         httpClient = httpClient ?? http.Client();
 
-  /// Fetches (a maximum of 'maxItems') RSS feed posts. Returns a future!
+  /// Fetches (a maximum of 'maxItems') RSS feed posts.
   Future<List<RssPost>> fetchRssPosts(int maxItems) async {
+    return fetchRssPostsFromIndex(0, maxItems);
+  }
+
+  /// Fetches (a maximum of 'maxItems') RSS feed posts starting at index 'index'.
+  Future<List<RssPost>> fetchRssPostsFromIndex(int index, int maxItems) async {
     final response = await httpClient.get(url);
     final feed = rssFeedParser(response.body);
 
@@ -32,14 +37,12 @@ class RssFeedReader {
 
     final n = min(validItems.length, maxItems);
     return validItems
-        .sublist(0, n)
+        .sublist(index, n)
         .map((rssItem) => RssPost(
-            title: rssItem.title,
-            url: rssItem.link,
-            pubDate: parseRssDate(rssItem.pubDate)))
+          title: rssItem.title,
+          url: rssItem.link,
+          pubDate: parseRssDate(rssItem.pubDate)))
         .toList();
-
-    // TODO: add some kind of pagination!
   }
 
   /// Parses a common RSS feed date (e.g. 'Sat, 17 Nov 2018 05:50:14 GMT')

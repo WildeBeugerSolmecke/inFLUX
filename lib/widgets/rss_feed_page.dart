@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:influx/config.dart';
 import 'package:influx/utility/rss_feed/rss_feed_reader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
@@ -18,9 +18,14 @@ class RssFeedPage extends StatefulWidget {
 
 class _RssFeedState extends State<RssFeedPage> {
   final RssFeedReader _rssFeedReader;
+  final int _maxRssFeedItems = 20;
   final _formatter = DateFormat('dd.MM.yyyy HH:mm:ss');
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+
+  final StreamController<List<RssPost>> _streamController =
+      StreamController<List<RssPost>>();
+  final ScrollController _scrollController = ScrollController();
+
+  int _lastRssFeedIndex = 0;
 
   _RssFeedState({RssFeedReader rssFeedReader})
       : _rssFeedReader =
@@ -28,12 +33,15 @@ class _RssFeedState extends State<RssFeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    final maxRssFeedItems = 20;
-    final rssPosts = _rssFeedReader.fetchRssPosts(maxRssFeedItems);
+    final rssPosts = _rssFeedReader.fetchRssPosts(_maxRssFeedItems);
+    final Stream<List<RssPost>> rssPostStream = Stream.fromFuture(rssPosts);
+
+    _streamController.addStream(rssPostStream);
+    _scrollController.addListener(_handleScrolling);
 
     return Material(
         child: Center(
-      child: FutureBuilder(
+      child: StreamBuilder(
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final listItems = snapshot.data
@@ -45,14 +53,10 @@ class _RssFeedState extends State<RssFeedPage> {
                     ))
                 .toList();
 
-            return /*RefreshIndicator(
-              key: _refreshIndicatorKey,
-              onRefresh: _refreshRssFeed,
-              child: */ListView(
-                children: listItems,
-                physics: const AlwaysScrollableScrollPhysics(),
-              );
-            //);
+            return ListView(
+              children: listItems,
+              controller: _scrollController,
+            );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}"); // TODO: Hide error details!
 
@@ -60,7 +64,7 @@ class _RssFeedState extends State<RssFeedPage> {
             return CircularProgressIndicator();
           }
         },
-        future: rssPosts,
+        stream: _streamController.stream,
       ),
     ));
   }
@@ -79,7 +83,21 @@ class _RssFeedState extends State<RssFeedPage> {
     return () => launch(post.url);
   }
 
-  Future<void> _refreshRssFeed() {
-    print('refresh!');
+  void _handleScrolling() {
+    if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent) {
+      _rssFeedReader
+          .fetchRssPostsFromIndex(_lastRssFeedIndex, _maxRssFeedItems)
+          .then((items) {
+            _streamController.add(items);
+            _lastRssFeedIndex += items.length;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
   }
 }
