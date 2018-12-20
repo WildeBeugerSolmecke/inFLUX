@@ -12,7 +12,10 @@ class RssFeedReader {
   static final defaultRssFeedParser = (xmlString) => RssFeed.parse(xmlString);
 
   /// A constructor that allows to override the default implementations.
-  RssFeedReader({@required this.url, rssFeedParser, httpClient})
+  RssFeedReader(
+      {@required this.url,
+      RssFeed Function(String xmlString) rssFeedParser,
+      http.Client httpClient})
       : rssFeedParser = rssFeedParser ?? defaultRssFeedParser,
         httpClient = httpClient ?? http.Client();
 
@@ -21,8 +24,14 @@ class RssFeedReader {
     final response = await httpClient.get(url);
     final feed = rssFeedParser(response.body);
 
-    final n = min(feed.items.length, maxItems);
-    return feed.items
+    // RSS items HAVE TO have at least a title and a URL:
+    final validItems = feed.items
+        .where((rssItem) => (rssItem.title != null && rssItem.title.isNotEmpty))
+        .where((rssItem) => (rssItem.link != null && rssItem.link.isNotEmpty))
+        .toList();
+
+    final n = min(validItems.length, maxItems);
+    return validItems
         .sublist(0, n)
         .map((rssItem) => RssPost(
             title: rssItem.title,

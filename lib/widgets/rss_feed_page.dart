@@ -7,12 +7,10 @@ import 'package:intl/intl.dart';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
-
   // TODO: this should not be injected manually but via a DI framework:
   final RssFeedReader rssFeedReader;
 
-  const RssFeedPage({this.rssFeedReader, Key key})
-      : super(key: key);
+  const RssFeedPage({this.rssFeedReader, Key key}) : super(key: key);
 
   @override
   _RssFeedState createState() => _RssFeedState(rssFeedReader: rssFeedReader);
@@ -20,9 +18,11 @@ class RssFeedPage extends StatefulWidget {
 
 class _RssFeedState extends State<RssFeedPage> {
   final RssFeedReader _rssFeedReader;
-  final formatter = DateFormat('dd.MM.yyyy HH:mm:ss');
+  final _formatter = DateFormat('dd.MM.yyyy HH:mm:ss');
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
-  _RssFeedState({rssFeedReader})
+  _RssFeedState({RssFeedReader rssFeedReader})
       : _rssFeedReader =
             rssFeedReader ?? RssFeedReader(url: InFluxConfig.rssFeedUrl);
 
@@ -33,43 +33,53 @@ class _RssFeedState extends State<RssFeedPage> {
 
     return Material(
         child: Center(
-          child: FutureBuilder(
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final listItems = snapshot.data
-                    .map<ListTile>((rssPost) => ListTile(
-                          leading: Icon(Icons.arrow_right),
-                          title: rssPostTitleToText(rssPost),
-                          subtitle: pubDate(rssPost),
-                          onTap: rssPostUrlToTapCallback(rssPost),
-                        ))
-                    .toList();
-                return ListView(
-                  children: listItems,
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}"); // TODO: Hide error details!
+      child: FutureBuilder(
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final listItems = snapshot.data
+                .map<ListTile>((rssPost) => ListTile(
+                      leading: Icon(Icons.arrow_right),
+                      title: _rssPostTitleToText(rssPost),
+                      subtitle: _pubDate(rssPost),
+                      onTap: _rssPostUrlToTapCallback(rssPost),
+                    ))
+                .toList();
 
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-            future: rssPosts,
-          ),
-        ));
+            return /*RefreshIndicator(
+              key: _refreshIndicatorKey,
+              onRefresh: _refreshRssFeed,
+              child: */ListView(
+                children: listItems,
+                physics: const AlwaysScrollableScrollPhysics(),
+              );
+            //);
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}"); // TODO: Hide error details!
+
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+        future: rssPosts,
+      ),
+    ));
   }
 
-  Text rssPostTitleToText(RssPost post) {
+  Text _rssPostTitleToText(RssPost post) {
     // TODO: Trim string to fit a single line!
     return Text(post.title);
   }
 
-  Text pubDate(RssPost post) {
-    final date = formatter.format(post.pubDate);
+  Text _pubDate(RssPost post) {
+    final date = _formatter.format(post.pubDate);
     return Text(date);
   }
 
-  GestureTapCallback rssPostUrlToTapCallback(RssPost post) {
+  GestureTapCallback _rssPostUrlToTapCallback(RssPost post) {
     return () => launch(post.url);
+  }
+
+  Future<void> _refreshRssFeed() {
+    print('refresh!');
   }
 }
