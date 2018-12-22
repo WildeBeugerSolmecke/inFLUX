@@ -28,7 +28,7 @@ class _BasePageState extends State<BasePage> {
     );
   }
 
-  void _onTap(index){
+  void _onTap(int index){
     this.setState(() => _curIndex = index);
   }
 }
