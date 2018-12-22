@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'youtube_responses.dart';
-import 'dart:convert';
 
 class HttpClientYoutubeWbsMock extends Mock implements Client {
   HttpClientYoutubeWbsMock() {
