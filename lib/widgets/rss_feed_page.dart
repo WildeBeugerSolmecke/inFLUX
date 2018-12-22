@@ -3,13 +3,10 @@ import 'package:influx/config.dart';
 import 'package:influx/utility/rss_feed/rss_feed_reader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
 
 /// A widget that displays contents from an RSS feed.
 class RssFeedPage extends StatefulWidget {
-  // TODO: this should not be injected manually but via a DI framework:
   final RssFeedReader rssFeedReader;
-
   const RssFeedPage({this.rssFeedReader, Key key}) : super(key: key);
 
   @override
@@ -17,12 +14,10 @@ class RssFeedPage extends StatefulWidget {
 }
 
 class _RssFeedState extends State<RssFeedPage> {
-  final RssFeedReader _rssFeedReader;
   final int _maxRssFeedItems = 20;
   final _formatter = DateFormat('dd.MM.yyyy HH:mm:ss');
 
-  final StreamController<List<RssPost>> _streamController =
-      StreamController<List<RssPost>>();
+  final RssFeedReader _rssFeedReader;
   final ScrollController _scrollController = ScrollController();
 
   int _lastRssFeedIndex = 0;
@@ -33,15 +28,12 @@ class _RssFeedState extends State<RssFeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    final rssPosts = _rssFeedReader.fetchRssPosts(_maxRssFeedItems);
-    final Stream<List<RssPost>> rssPostStream = Stream.fromFuture(rssPosts);
-
-    _streamController.addStream(rssPostStream);
+    final rssPosts = _rssFeedReader.fetchRssPosts(_maxRssFeedItems + _lastRssFeedIndex);
     _scrollController.addListener(_handleScrolling);
 
     return Material(
         child: Center(
-      child: StreamBuilder(
+      child: FutureBuilder(
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final listItems = snapshot.data
@@ -52,6 +44,7 @@ class _RssFeedState extends State<RssFeedPage> {
                       onTap: _rssPostUrlToTapCallback(rssPost),
                     ))
                 .toList();
+            _lastRssFeedIndex += snapshot.data.length;
 
             return ListView(
               children: listItems,
@@ -64,7 +57,7 @@ class _RssFeedState extends State<RssFeedPage> {
             return CircularProgressIndicator();
           }
         },
-        stream: _streamController.stream,
+        future: rssPosts,
       ),
     ));
   }
@@ -75,8 +68,17 @@ class _RssFeedState extends State<RssFeedPage> {
   }
 
   Text _pubDate(RssPost post) {
-    final date = _formatter.format(post.pubDate);
-    return Text(date);
+    final defaultText = Text("");
+    if (post != null && post.pubDate != null) {
+      try {
+        final date = _formatter.format(post.pubDate);
+        return Text(date);
+      } catch (e) {
+        return defaultText;
+      }
+    } else {
+      return defaultText;
+    }
   }
 
   GestureTapCallback _rssPostUrlToTapCallback(RssPost post) {
@@ -86,18 +88,8 @@ class _RssFeedState extends State<RssFeedPage> {
   void _handleScrolling() {
     if (_scrollController.offset >=
         _scrollController.position.maxScrollExtent) {
-      _rssFeedReader
-          .fetchRssPostsFromIndex(_lastRssFeedIndex, _maxRssFeedItems)
-          .then((items) {
-            _streamController.add(items);
-            _lastRssFeedIndex += items.length;
-      });
+      // trigger builder:
+      setState(() {});
     }
-  }
-
-  @override
-  void dispose() {
-    _streamController.close();
-    super.dispose();
   }
 }

@@ -35,7 +35,8 @@ class RssFeedReader {
         .where((rssItem) => (rssItem.link != null && rssItem.link.isNotEmpty))
         .toList();
 
-    final n = min(validItems.length, maxItems);
+    final l = validItems.length - index;
+    final n = min(l, maxItems) + index;
     return validItems
         .sublist(index, n)
         .map((rssItem) => RssPost(
