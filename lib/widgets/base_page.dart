@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/rss_feed_page.dart';
-import 'package:influx/widgets/youtube_page/youtube_page_clone.dart';
+import 'package:influx/widgets/youtube_page/youtube_page.dart';
 
 class BasePage extends StatefulWidget {
   const BasePage({ Key key }) : super(key: key);
@@ -35,7 +35,7 @@ class _BasePageState extends State<BasePage> {
 
 class InFluxNavigator{
   static final pages = <Page>[
-    Page(index: 0, name: 'Youtube', body: YoutubePageClone(), icon: Icon(FontAwesomeIcons.youtube)),
+    Page(index: 0, name: 'Youtube', body: YoutubePage(), icon: Icon(FontAwesomeIcons.youtube)),
     Page(index: 1, name: 'Rss Fees',body: RssFeedPage(), icon: Icon(FontAwesomeIcons.rss))
   ];
 
