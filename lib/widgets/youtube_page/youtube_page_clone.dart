@@ -1,147 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:influx/config.dart';
+import 'package:influx/utility/youtube/api_response_dtos/medium.dart';
+import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
+import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
+import 'package:influx/utility/youtube/model/youtube_video_info.dart';
+import 'package:influx/utility/youtube/youtube_api_adapter.dart';
 
 class YoutubePageClone extends StatefulWidget {
+  final YoutubeApiAdapter youtubeApiAdapter;
+
+  YoutubePageClone({this.youtubeApiAdapter, Key key}) : super(key: key);
+
   @override
   YoutubePageCloneState createState() => new YoutubePageCloneState();
 }
 
-class YoutubePageCloneState extends State<YoutubePageClone>
-    with TickerProviderStateMixin {
+class YoutubePageCloneState extends State<YoutubePageClone> {
+  final YoutubeApiAdapter youtubeApiAdapter;
 
-  var videos = [
-    VideoItemModel(
-        "Gordon Ramsay Cooked For Vladimir Putin",
-        "The Late Show with Stephen Colbert\n1.1M views.2 weeks ago",
-        "lib/widgets/youtube_page/assets/youtube_one.jpg"),
-    VideoItemModel("Hailee Steinfeld, Alesso - Let Me Go",
-        "Hailee Steinfeld\n57M views.8 months ago", "lib/widgets/youtube_page/assets/youtube_two.jpg"),
-    VideoItemModel("Charlie Puth - Look At Me Now",
-        "Lyricwood\n4.7M views.4 months ago", "lib/widgets/youtube_page/assets/youtube_three.jpg")
-  ];
+  // state
+  YoutubeChannelInfo _chanelInfo;
+  List<YoutubeVideoInfo> _videos = new List();
+  var _isLoadingAdditionalData = false;
+  var _isLoadingInitialData = true;
 
-  AnimationController alignmentAnimationController;
-  Animation alignmentAnimation;
+  final _scrollController = ScrollController();
+  static const _videoBatchSize = 20;
 
-  AnimationController videoViewController;
-  Animation videoViewAnimation;
-
-  var currentAlignment = Alignment.topCenter;
-
-  var minVideoHeight = 100.0;
-  var minVideoWidth = 150.0;
-
-  var maxVideoHeight = 200.0;
-
-  // This is an arbitrary value and will be changed when layout is built.
-  var maxVideoWidth = 250.0;
-
-  var currentVideoHeight = 200.0;
-  var currentVideoWidth = 200.0;
-
-  bool isInSmallMode = false;
-
-  var videoIndexSelected = -1;
+  YoutubePageCloneState({YoutubeApiAdapter youtubeApiAdapter})
+      : youtubeApiAdapter = youtubeApiAdapter ?? YoutubeApiAdapter();
 
   @override
   void initState() {
     super.initState();
 
-    alignmentAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 10))
-          ..addListener(() {
-            setState(() {
-              currentAlignment = alignmentAnimation.value;
-            });
-          });
-    alignmentAnimation =
-        AlignmentTween(begin: Alignment.topCenter, end: Alignment.bottomRight)
-            .animate(CurvedAnimation(
-                parent: alignmentAnimationController,
-                curve: Curves.fastOutSlowIn));
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.offset) {
+        this._loadMore();
+      }
+    });
+  }
 
-    videoViewController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 10))
-          ..addListener(() {
-            setState(() {
-              currentVideoWidth = (maxVideoWidth * videoViewAnimation.value) +
-                  (minVideoWidth * (1.0 - videoViewAnimation.value));
-              currentVideoHeight = (maxVideoHeight * videoViewAnimation.value) +
-                  (minVideoHeight * (1.0 - videoViewAnimation.value));
-            });
-          });
-    videoViewAnimation =
-        Tween<double>(begin: 1.0, end: 0.0).animate(videoViewController);
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  void _loadMore() async {
+    setState(() => _isLoadingAdditionalData = true);
+    final lastVideoPublishedAt = _videos.last.publishedAt;
+    // decrease by 1 milliseconds so we don't render the last video twice
+    final afterLastVideoPublished =
+        lastVideoPublishedAt.subtract(Duration(milliseconds: 1));
+
+    var olderVideos = await youtubeApiAdapter.getVideos(
+        channelId: InFluxConfig.youtubeChannelId,
+        apiKey: InFluxConfig.youtubeApiKey,
+        maxResults: _videoBatchSize,
+        publishedBefore: afterLastVideoPublished);
+    // add them all
+    _videos.addAll(olderVideos);
+    // sort by date
+    _videos.sort((a, b) => a.publishedAt.isAfter(b.publishedAt) ? -1 : 1);
+    // re-render list
+    this.setState(() => _isLoadingAdditionalData = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingInitialData) {
+      youtubeApiAdapter
+          .getYoutubeChannelAndVideos(
+          channelId: InFluxConfig.youtubeChannelId,
+          apiKey: InFluxConfig.youtubeApiKey,
+          maxResults: _videoBatchSize)
+          .then((channelAndVideos) {
+        this._chanelInfo = channelAndVideos.channel;
+        this._videos = channelAndVideos.videos;
+        this._isLoadingInitialData = false;
+        setState(() {});
+      });
+    }
+
+
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(
-              FontAwesomeIcons.youtube,
-              color: Colors.red,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                "YouTube",
+          backgroundColor: Colors.white,
+          title: Center(
+              child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                FontAwesomeIcons.youtube,
+                color: Colors.red,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  "YouTube - ",
+                  style: TextStyle(
+                      color: Colors.black,
+                      letterSpacing: -1.0,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              Text(
+                "KanzleiWBS",
                 style: TextStyle(
                     color: Colors.black,
                     letterSpacing: -1.0,
                     fontWeight: FontWeight.w700),
               ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Icon(
-              Icons.videocam,
-              color: Colors.black54,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Icon(
-              Icons.search,
-              color: Colors.black54,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Icon(
-              Icons.account_circle,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-      body: Stack(children: [
-        new Center(
-          child: ListView.builder(
-            itemCount: 3,
-            itemBuilder: (context, position) {
+            ],
+          ))),
+      body: Center(
+        child: _isLoadingInitialData
+        ? CircularProgressIndicator()
+        : ListView.builder(
+          controller: this._scrollController,
+          itemCount: _videos.length +1,
+          itemBuilder: (context, position) {
+            if (position < _videos.length) {
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    videoIndexSelected = position;
-                  });
+                  print("tapped $position.");
                 },
                 child: Column(
                   children: <Widget>[
                     Row(
                       children: <Widget>[
                         Expanded(
-                            child: Image.asset(
-                          videos[position].imagePath,
-                          fit: BoxFit.cover,
-                        )),
+                            child: Image.network(
+                              _videos[position].thumbnailUrls[ThumbnailResolution.MEDIUM],
+                              fit: BoxFit.cover,)
+                        ),
                       ],
                     ),
                     Padding(
@@ -149,25 +144,22 @@ class YoutubePageCloneState extends State<YoutubePageClone>
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Expanded(
-                            child: Icon(
-                              Icons.account_circle,
-                              size: 40.0,
-                            ),
-                            flex: 2,
-                          ),
+                          ClipOval(child: Image.network(
+                                this._chanelInfo.thumbnailUrls[ThumbnailResolution.MEDIUM],
+                                width: 40, height: 40)),
+                          Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
                           Expanded(
                             child: Column(
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 4.0),
                                   child: Text(
-                                    videos[position].title,
+                                    _videos[position].title,
                                     style: TextStyle(fontSize: 18.0),
                                   ),
                                 ),
                                 Text(
-                                  videos[position].publisher,
+                                  _chanelInfo.title,
                                   style: TextStyle(color: Colors.black54),
                                 )
                               ],
@@ -175,180 +167,22 @@ class YoutubePageCloneState extends State<YoutubePageClone>
                             ),
                             flex: 9,
                           ),
-                          Expanded(
-                            child: Icon(Icons.more_vert),
-                            flex: 1,
-                          ),
                         ],
                       ),
                     )
                   ],
                 ),
               );
-            },
-          ),
+            }
+            return Center(
+              child: Opacity(
+                opacity: _isLoadingAdditionalData ? 1.0 : 0.0,
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
         ),
-        videoIndexSelected > -1
-            ? LayoutBuilder(
-                builder: (context, constraints) {
-                  maxVideoWidth = constraints.biggest.width;
-
-                  if (!isInSmallMode) {
-                    currentVideoWidth = maxVideoWidth;
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: Align(
-                          child: Padding(
-                            padding: EdgeInsets.all(isInSmallMode ? 8.0 : 0.0),
-                            child: GestureDetector(
-                              child: Container(
-                                width: currentVideoWidth,
-                                height: currentVideoHeight,
-                                child: Image.asset(
-                                  videos[videoIndexSelected].imagePath,
-                                  fit: BoxFit.cover,
-                                ),
-                                color: Colors.blue,
-                              ),
-                              onVerticalDragEnd: (details) {
-                                if (details.velocity.pixelsPerSecond.dy > 0) {
-                                  setState(() {
-                                    isInSmallMode = true;
-                                    alignmentAnimationController.forward();
-                                    videoViewController.forward();
-                                  });
-                                } else if (details.velocity.pixelsPerSecond.dy <
-                                    0) {
-                                  setState(() {
-                                    alignmentAnimationController.reverse();
-                                    videoViewController.reverse().then((value) {
-                                      setState(() {
-                                        isInSmallMode = false;
-                                      });
-                                    });
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                          alignment: currentAlignment,
-                        ),
-                        flex: 3,
-                      ),
-                      currentAlignment == Alignment.topCenter
-                          ? Expanded(
-                              flex: 6,
-                              child: Container(
-                                child: Column(
-                                  children: <Widget>[
-                                    Row(),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text("Video Recommendation"),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text("Video Recommendation"),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text("Video Recommendation"),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                color: Colors.white,
-                              ),
-                            )
-                          : Container(),
-                      Row(),
-                    ],
-                  );
-                },
-              )
-            : Container()
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.black54,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              FontAwesomeIcons.fire,
-              color: Colors.black54,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.subscriptions,
-              color: Colors.black54,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.email,
-              color: Colors.black54,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.folder,
-              color: Colors.black54,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-        ],
-        type: BottomNavigationBarType.fixed,
       ),
     );
   }
-}
-
-class VideoItemModel {
-  String title;
-  String publisher;
-  String imagePath;
-
-  VideoItemModel(this.title, this.publisher, this.imagePath);
 }

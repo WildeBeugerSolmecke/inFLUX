@@ -87,15 +87,17 @@ class YoutubeApiAdapter {
       {@required final String channelId,
       @required final String apiKey,
       final int maxResults = 10,
-      final DateTime since}) async {
+      final DateTime publishedBefore}) async {
 
     // TODO URLBuilder
     var url =
         "$YOUTUBE_SEARCH_API_URL?key=$apiKey&channelId=$channelId&part=snippet,id&order=date&maxResults=20&type=video";
 
-    if(since != null){
-      url += "&publishedAfter=" + since.toIso8601String().toString();
+    if(publishedBefore != null){
+      url += "&publishedBefore=" + publishedBefore.toIso8601String();
     }
+
+/*    final uri = Uri.dataFromString(url);*/
 
     final response = await httpClient.get(url);
 

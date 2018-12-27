@@ -23,8 +23,7 @@ class YoutubeVideoInfo {
               id == other.id &&
               title == other.title &&
               description == other.description &&
-              publishedAt == other.publishedAt &&
-              thumbnailUrls == other.thumbnailUrls;
+              publishedAt == other.publishedAt;
 
   @override
   int get hashCode =>

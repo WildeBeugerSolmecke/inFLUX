@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
-import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/config.dart';
 import 'package:influx/widgets/youtube_page/youtube_video_list_item.dart';
 
@@ -14,103 +12,99 @@ class YoutubePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() =>
-      _YoutubePageState(apiAdapter: this.apiAdapter);
+      _YoutubePageState(youtubeApiAdapter: this.apiAdapter);
 }
 
 class _YoutubePageState extends State<YoutubePage> {
-  final YoutubeApiAdapter apiAdapter;
+  final YoutubeApiAdapter youtubeApiAdapter;
 
   // state
-  YoutubeChannelInfo chanelInfo;
-  List<YoutubeVideoInfo> videos = new List();
-  var isLoading = false;
-  var isInitialLoad = true;
+  YoutubeChannelInfo _chanelInfo;
+  List<YoutubeVideoInfo> _videos = new List();
+  var _isLoadingAdditionalData = false;
+  var _isLoadingInitialData = true;
 
-  final scrollController = ScrollController();
-  static const videoBatchSize = 20;
+  final _scrollController = ScrollController();
+  static const _videoBatchSize = 20;
 
-  _YoutubePageState({@required YoutubeApiAdapter apiAdapter})
-      : apiAdapter = apiAdapter ?? YoutubeApiAdapter();
+  _YoutubePageState({YoutubeApiAdapter youtubeApiAdapter})
+      : youtubeApiAdapter = youtubeApiAdapter ?? YoutubeApiAdapter();
 
   @override
   void initState() {
     super.initState();
 
-    scrollController.addListener(() {
-      print(scrollController.position.extentAfter);
-      if (scrollController.position.maxScrollExtent ==
-          scrollController.offset) {
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent ==
+          _scrollController.offset) {
         this._loadMore();
       }
-    });
-
-    this.setState(() => isInitialLoad == true);
-
-    apiAdapter.getYoutubeChannelAndVideos(
-        channelId: InFluxConfig.youtubeChannelId,
-        apiKey: InFluxConfig.youtubeApiKey,
-        maxResults: videoBatchSize)
-        .then((channelAndVideos) {
-      this.setState(() {
-        this.isInitialLoad = false;
-        this.videos = channelAndVideos.videos;
-        this.chanelInfo = channelAndVideos.channel;
-      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    scrollController.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingInitialData) {
+      youtubeApiAdapter
+          .getYoutubeChannelAndVideos(
+              channelId: InFluxConfig.youtubeChannelId,
+              apiKey: InFluxConfig.youtubeApiKey,
+              maxResults: _videoBatchSize)
+          .then((channelAndVideos) {
+        this._chanelInfo = channelAndVideos.channel;
+        this._videos = channelAndVideos.videos;
+        this._isLoadingInitialData = false;
+        setState(() {});
+      });
+    }
+
     return Material(
         color: Colors.black26,
-        child: isInitialLoad
+        child: _isLoadingInitialData
             ? Center(
-                child: Opacity(
-                  opacity: isLoading ? 1.0 : 0.0,
-                  child: CircularProgressIndicator(),
-                ),
+                child: CircularProgressIndicator(),
               )
             : ListView.builder(
                 itemBuilder: (context, index) {
-                  if (index < videos.length) {
+                  if (index < _videos.length) {
                     return YoutubeVideoListItem(
-                        videoInfo: videos[index], channelInfo: chanelInfo);
+                        videoInfo: _videos[index], channelInfo: _chanelInfo);
                   }
                   return Center(
                     child: Opacity(
-                      opacity: isLoading ? 1.0 : 0.0,
+                      opacity: _isLoadingAdditionalData ? 1.0 : 0.0,
                       child: CircularProgressIndicator(),
                     ),
                   );
                 },
-                itemCount: videos.length + 1,
+                itemCount: _videos.length + 1,
+                controller: _scrollController,
               ));
   }
 
   void _loadMore() async {
-    setState(() => isLoading = true);
-    DateTime lastVideoPublishedAt = videos.last.publishedAt;
-    var olderVideos = await apiAdapter.getVideos(
+    setState(() => _isLoadingAdditionalData = true);
+    final lastVideoPublishedAt = _videos.last.publishedAt;
+    // decrease by 1 milliseconds so we don't render the last video twice
+    final afterLastVideoPublished =
+        lastVideoPublishedAt.subtract(Duration(milliseconds: 1));
+
+    var olderVideos = await youtubeApiAdapter.getVideos(
         channelId: InFluxConfig.youtubeChannelId,
-        apiKey: InFluxConfig.youtubeChannelId,
-        maxResults: videoBatchSize,
-        since: lastVideoPublishedAt);
-    videos.addAll(olderVideos);
+        apiKey: InFluxConfig.youtubeApiKey,
+        maxResults: _videoBatchSize,
+        publishedBefore: afterLastVideoPublished);
+    // add them all
+    _videos.addAll(olderVideos);
     // sort by date
-    videos.sort((a, b) => a.publishedAt.isAfter(b.publishedAt) ? 1 : -1);
-    // remove doubles
-    for (int i = 0; i < videos.length - 1; i++) {
-      if (videos[i] == videos[i + 1]) {
-        videos.removeAt(i);
-      }
-    }
+    _videos.sort((a, b) => a.publishedAt.isAfter(b.publishedAt) ? -1 : 1);
     // re-render list
-    this.setState(() => isLoading = false);
+    this.setState(() => _isLoadingAdditionalData = false);
   }
 }
