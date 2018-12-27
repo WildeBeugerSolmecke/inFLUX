@@ -22,7 +22,7 @@ class YoutubeApiAdapter {
 
   /// Creates new YoutubeApiAdapter with the defined [client] or the [defaultHttpClient]
   /// if no [client] was specified
-  YoutubeApiAdapter({Client client}) : httpClient = client ?? defaultHttpClient, assert(client!=null);
+  YoutubeApiAdapter({Client client}) : httpClient = client ?? defaultHttpClient;
 
   /// Queries the youtube api for channel info and most recent uploaded videos
   /// of a youtube-channel defined by [channelId].
@@ -86,9 +86,16 @@ class YoutubeApiAdapter {
   Future<List<YoutubeVideoInfo>> getVideos(
       {@required final String channelId,
       @required final String apiKey,
-      final int maxResults = 10}) async {
-    final url =
+      final int maxResults = 10,
+      final DateTime since}) async {
+
+    // TODO URLBuilder
+    var url =
         "$YOUTUBE_SEARCH_API_URL?key=$apiKey&channelId=$channelId&part=snippet,id&order=date&maxResults=20&type=video";
+
+    if(since != null){
+      url += "&publishedAfter=" + since.toIso8601String().toString();
+    }
 
     final response = await httpClient.get(url);
 

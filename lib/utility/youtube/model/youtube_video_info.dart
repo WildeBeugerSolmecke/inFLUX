@@ -14,4 +14,26 @@ class YoutubeVideoInfo {
       @required this.description,
       @required this.publishedAt,
       @required this.thumbnailUrls});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is YoutubeVideoInfo &&
+              runtimeType == other.runtimeType &&
+              id == other.id &&
+              title == other.title &&
+              description == other.description &&
+              publishedAt == other.publishedAt &&
+              thumbnailUrls == other.thumbnailUrls;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      title.hashCode ^
+      description.hashCode ^
+      publishedAt.hashCode ^
+      thumbnailUrls.hashCode;
+
+
+
 }
