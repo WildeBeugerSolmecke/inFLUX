@@ -1,15 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:influx/config.dart';
 import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
-import 'package:influx/utility/youtube/youtube_api_adapter.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
-import 'package:http/http.dart';
-import 'package:mockito/mockito.dart';
-import 'http_client_youtube_wbs_mock.dart';
+import 'package:influx/utility/youtube/youtube_api_adapter.dart';
 
-class MockHttpClient extends Mock implements Client {}
+import 'http_client_youtube_wbs_mock.dart';
 
 void main() {
   test('fetching wbs channel info from youtube api', () async {
