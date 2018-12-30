@@ -21,22 +21,39 @@ class _RssFeedState extends State<RssFeedPage> {
   final ScrollController _scrollController = ScrollController();
 
   int _lastRssFeedIndex = 0;
+  List<RssPost> _rssPosts = List();
 
   _RssFeedState({RssFeedReader rssFeedReader})
       : _rssFeedReader =
             rssFeedReader ?? RssFeedReader(url: InFluxConfig.rssFeedUrl);
 
   @override
-  Widget build(BuildContext context) {
-    final rssPosts = _rssFeedReader.fetchRssPosts(_maxRssFeedItems + _lastRssFeedIndex);
+  initState() {
+    super.initState();
     _scrollController.addListener(_handleScrolling);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rssPosts = _rssFeedReader.fetchRssPostsFromIndex(
+        _lastRssFeedIndex, _maxRssFeedItems);
 
     return Material(
         child: Center(
       child: FutureBuilder(
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final listItems = snapshot.data
+            // ensure that no duplicates were fetched:
+            final snapshotData = snapshot.data as List<RssPost>;
+            final distinctData = snapshotData
+                .where((post) => !(_rssPosts.contains(post)))
+                .toList();
+            _rssPosts.addAll(distinctData);
+            _lastRssFeedIndex = _rssPosts.length;
+            print('snapshot.data.length: ${snapshot.data.length}');
+            print('_lastRssFeedIndex: $_lastRssFeedIndex');
+
+            final listItems = _rssPosts
                 .map<ListTile>((rssPost) => ListTile(
                       leading: Icon(Icons.arrow_right),
                       title: _rssPostTitleToText(rssPost),
@@ -44,8 +61,6 @@ class _RssFeedState extends State<RssFeedPage> {
                       onTap: _rssPostUrlToTapCallback(rssPost),
                     ))
                 .toList();
-            _lastRssFeedIndex += snapshot.data.length;
-
             return ListView(
               children: listItems,
               controller: _scrollController,
