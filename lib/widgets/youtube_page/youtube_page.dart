@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:influx/config.dart';
-import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
-import 'package:influx/widgets/youtube_page/infinty_scroll_list.dart';
-import 'package:influx/widgets/youtube_page/tap_to_reload.dart';
+import 'package:influx/widgets/generic/infinity_scroll_list.dart';
+import 'package:influx/widgets/generic/tap_to_reload.dart';
 import 'package:influx/widgets/youtube_page/youtube_app_bar.dart';
 import 'package:influx/widgets/youtube_page/youtube_video_list_item.dart';
 
