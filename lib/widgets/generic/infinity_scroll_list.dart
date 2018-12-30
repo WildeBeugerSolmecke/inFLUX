@@ -62,8 +62,14 @@ class InfinityScrollList<T> extends StatefulWidget {
             batchSize: this.batchSize,
             compare: this.compare,
             renderItem: this.renderItem);
-      default:
-        return null;
+      case  LoadSetting.OFFSET_BASED:
+        return InfinityScrollListOffsetBasedState(
+          renderItem: this.renderItem,
+          dataSupplierOffsetBased: this.dataSupplierOffsetBased,
+          batchSize: this.batchSize,
+          compare: this.compare
+        );
+      default: throw Exception("LoadSetting not supported");
     }
   }
 }
@@ -142,7 +148,7 @@ class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
       @required this.getDateTime,
       RenderItem<T> renderItem,
       Compare<T> compare,
-      int batchSize})
+      int batchSize = 20})
       : assert(dataSupplierTimeBased != null),
         assert(getDateTime != null),
         super(renderItem, compare: compare, batchSize: batchSize);
@@ -193,8 +199,8 @@ class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
 }
 
 class InfinityScrollListOffsetBasedState<T> extends InfinityScrollListState<T> {
-  InfinityScrollListOffsetBasedState(RenderItem<T> renderItem,
-      {@required this.dataSupplierOffsetBased, Compare<T> compare, int batchSize = 20})
+  InfinityScrollListOffsetBasedState({@required RenderItem<T> renderItem,
+      @required this.dataSupplierOffsetBased, Compare<T> compare, int batchSize = 20})
       : assert(renderItem!=null), assert(dataSupplierOffsetBased!=null), super(renderItem, compare: compare, batchSize: batchSize);
 
   DataSupplierOffsetBased dataSupplierOffsetBased;
@@ -219,7 +225,7 @@ class InfinityScrollListOffsetBasedState<T> extends InfinityScrollListState<T> {
 
   @override
   Future<void> _loadMoreData() async {
-    setState(() => _state = WidgetState.INITIAL_STATE);
+    setState(() => _state = WidgetState.LOADING_MORE);
     List<T> data = List();
     try {
       data = await this
