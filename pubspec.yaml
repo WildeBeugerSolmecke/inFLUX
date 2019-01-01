@@ -28,11 +28,6 @@ dev_dependencies:
 
 
 flutter:
-  assets:
-    - lib/widgets/youtube_page/assets/youtube_one.jpg
-    - lib/widgets/youtube_page/assets/youtube_two.jpg
-    - lib/widgets/youtube_page/assets/youtube_three.jpg
-
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   # assets:
