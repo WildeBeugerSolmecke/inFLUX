@@ -11,9 +11,21 @@ void main() {
     final mockHttpClient = MockClient((request) async => Response('', 200));
     final mockRssFeed = MockRssFeed();
     when(mockRssFeed.items).thenReturn(<RssItem>[
-      RssItem(title: 'Title 1', link: 'www.in.flux/1', pubDate: 'Wed, 28 Nov 2018 18:48:01 +0100'),
-      RssItem(title: 'Title 2', link: 'www.in.flux/2', pubDate: 'Wed, 28 Nov 2018 18:48:02 +0100'),
-      RssItem(title: 'Title 2', link: 'www.in.flux/2', pubDate: 'Wed, 28 Nov 2018 18:48:03 +0100'),
+      RssItem(
+          title: 'Title 1',
+          link: 'www.in.flux/1',
+          pubDate: 'Wed, 28 Nov 2018 18:48:01 +0100',
+          guid: '1001'),
+      RssItem(
+          title: 'Title 2',
+          link: 'www.in.flux/2',
+          pubDate: 'Wed, 28 Nov 2018 18:48:02 +0100',
+          guid: '1002'),
+      RssItem(
+          title: 'Title 2',
+          link: 'www.in.flux/2',
+          pubDate: 'Wed, 28 Nov 2018 18:48:03 +0100',
+          guid: '1003'),
     ]);
 
     // create the RssFeedReader:
@@ -33,9 +45,15 @@ void main() {
     final mockHttpClient = MockClient((request) async => Response('', 200));
     final mockRssFeed = MockRssFeed();
     when(mockRssFeed.items).thenReturn(<RssItem>[
-      RssItem(title: 'Title 1', link: 'www.in.flux/1', pubDate: 'Wed, 28 Nov 2018 18:48:01 +0100'),
+      RssItem(
+          title: 'Title 1',
+          link: 'www.in.flux/1',
+          pubDate: 'Wed, 28 Nov 2018 18:48:01 +0100',
+          guid: '1001'),
       RssItem(title: 'Title 2'),
-      RssItem(link: 'www.in.flux/2',),
+      RssItem(
+        link: 'www.in.flux/2',
+      ),
     ]);
 
     // create the RssFeedReader:

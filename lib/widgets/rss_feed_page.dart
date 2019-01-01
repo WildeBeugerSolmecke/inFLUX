@@ -19,6 +19,8 @@ class _RssFeedState extends State<RssFeedPage> {
 
   final RssFeedReader _rssFeedReader;
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   int _lastRssFeedIndex = 0;
   List<RssPost> _rssPosts = List();
@@ -50,8 +52,6 @@ class _RssFeedState extends State<RssFeedPage> {
                 .toList();
             _rssPosts.addAll(distinctData);
             _lastRssFeedIndex = _rssPosts.length;
-            print('snapshot.data.length: ${snapshot.data.length}');
-            print('_lastRssFeedIndex: $_lastRssFeedIndex');
 
             final listItems = _rssPosts
                 .map<ListTile>((rssPost) => ListTile(
@@ -61,10 +61,14 @@ class _RssFeedState extends State<RssFeedPage> {
                       onTap: _rssPostUrlToTapCallback(rssPost),
                     ))
                 .toList();
-            return ListView(
-              children: listItems,
-              controller: _scrollController,
-            );
+            return RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: _refreshRssFeed,
+                child: ListView(
+                  children: listItems,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                ));
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}"); // TODO: Hide error details!
 
@@ -106,5 +110,12 @@ class _RssFeedState extends State<RssFeedPage> {
       // trigger builder:
       setState(() {});
     }
+  }
+
+  Future<void> _refreshRssFeed() async {
+    setState(() {
+      _lastRssFeedIndex = 0;
+      _rssPosts.clear();
+    });
   }
 }
