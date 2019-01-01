@@ -34,9 +34,9 @@ class _BasePageState extends State<BasePage> {
 }
 
 class InFluxNavigator{
-  static const pages = <Page>[
-    const Page(index: 0, name: 'Youtube', body: YoutubePage(), icon: Icon(FontAwesomeIcons.youtube)),
-    const Page(index: 1, name: 'Rss Fees',body: RssFeedPage(), icon: Icon(FontAwesomeIcons.rss))
+  static final pages = <Page>[
+    Page(index: 0, name: 'Youtube', body: YoutubePage(), icon: Icon(FontAwesomeIcons.youtube)),
+    Page(index: 1, name: 'Rss Fees',body: RssFeedPage(), icon: Icon(FontAwesomeIcons.rss))
   ];
 
   static final render = (int index) => pages.where((page) => page.index == index).map((page)=> page.body).single;

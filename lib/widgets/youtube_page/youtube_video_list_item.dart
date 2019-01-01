@@ -3,6 +3,7 @@ import 'package:influx/utility/youtube/datetime_converter.dart';
 import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class YoutubeVideoListItem extends StatelessWidget {
   final YoutubeVideoInfo videoInfo;
@@ -14,31 +15,24 @@ class YoutubeVideoListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-      child: Material(
-          color: Color(0XFFFFFFFF),
-          elevation: 2.0,
-          borderRadius: BorderRadius.circular(12.0),
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () => launch("https://www.youtube.com/watch?v=${videoInfo.id}"),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(
-                    left: 12.0, right: 12.0, top: 12.0, bottom: 2.0),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(12.0)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Image.network(
-                      this.videoInfo.thumbnailUrls[ThumbnailResolution.HIGH],
-                      fit: BoxFit.contain),
-                ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Image.network(
+                    videoInfo.thumbnailUrls[ThumbnailResolution.MEDIUM],
+                    fit: BoxFit.cover,
+                  )),
+                ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+                padding: const EdgeInsets.all(12.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ClipOval(
@@ -46,53 +40,53 @@ class YoutubeVideoListItem extends StatelessWidget {
                             this
                                 .channelInfo
                                 .thumbnailUrls[ThumbnailResolution.MEDIUM],
-                            width: 90,
-                            height: 90)),
-                    SizedBox(width: 10.0),
+                            width: 40,
+                            height: 40)),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          SizedBox(height: 8.0),
-                          Text(
-                            this.videoInfo.title,
-                            overflow: TextOverflow.clip,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.5,
-                              fontWeight: FontWeight.w900,
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              videoInfo.title,
+                              style: TextStyle(fontSize: 18.0),
                             ),
                           ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            this.channelInfo.title,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(0XFF646464),
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            '${DateTimeConverter.getDurationAsText(videoInfo.publishedAt)}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Color(0XFFBBBBBB),
-                              fontWeight: FontWeight.w800,
-                              fontSize: 14.0,
-                            ),
-                          ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                channelInfo.title,
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                              Expanded(
+                                child: Text(
+                                    DateTimeConverter.getDurationAsText(
+                                        videoInfo.publishedAt),
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.end),
+                              ),
+                            ],
+                          )
                         ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
                       ),
+                      flex: 9,
                     ),
                   ],
                 ),
               )
             ],
-          )),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+        )
+      ],
     );
   }
 }

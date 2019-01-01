@@ -13,6 +13,7 @@ abstract class VideoListResponse implements Built<VideoListResponse, VideoListRe
 
   String get kind;
   String get etag;
+  @nullable
   String get nextPageToken;
   String get regionCode;
   PageInfo get pageInfo;

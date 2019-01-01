@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:influx/utility/youtube/api_response_dtos/channel_info_response.dart';
 import 'package:influx/utility/youtube/api_response_dtos/serializers.dart';
 import 'package:influx/utility/youtube/api_response_dtos/video_list_response.dart';
 import 'package:influx/utility/youtube/model/thumbnail_resolution.dart';
-import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
+import 'package:influx/utility/youtube/model/youtube_channel_with_videos.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
 import 'package:meta/meta.dart';
 
@@ -22,25 +23,19 @@ class YoutubeApiAdapter {
 
   /// Creates new YoutubeApiAdapter with the defined [client] or the [defaultHttpClient]
   /// if no [client] was specified
-  YoutubeApiAdapter({Client client}) : httpClient = client ?? defaultHttpClient, assert(client!=null);
+  YoutubeApiAdapter({Client client}) : httpClient = client ?? defaultHttpClient;
 
   /// Queries the youtube api for channel info and most recent uploaded videos
   /// of a youtube-channel defined by [channelId].
   Future<YoutubeChannelWithVideos> getYoutubeChannelAndVideos(
       {@required final String channelId,
       @required final String apiKey,
-      final int maxResults = 10}) async {
-    List responses = await Future.wait([
-      getChannelInfo(
-          channelId: channelId, apiKey: apiKey),
-      getVideos(
-          channelId: channelId,
-          maxResults: 10,
-          apiKey: apiKey)
-    ]);
-
-    return YoutubeChannelWithVideos(
-        channel: responses[0], videos: responses[1]);
+      final int maxResults = 20}) async {
+    return await Future.wait([
+      getChannelInfo(channelId: channelId, apiKey: apiKey),
+      getVideos(channelId: channelId, maxResults: maxResults, apiKey: apiKey)
+    ]).then((result) =>
+        YoutubeChannelWithVideos(channel: result[0], videos: result[1]));
   }
 
   /// Queries the youtube api for channel info for a given youtube channel
@@ -50,7 +45,9 @@ class YoutubeApiAdapter {
     final url =
         "$YOUTUBE_CHANNEL_API_URL?part=contentDetails,snippet&id=$channelId&key=$apiKey";
 
-    var response = await httpClient.get(url);
+    var response = await httpClient.get(url).timeout(Duration(seconds: 3),
+        onTimeout: () => throw Exception(
+            "Timeout while fetching channel info from youtube api"));
 
     if (response.statusCode != 200)
       throw new Exception(
@@ -86,11 +83,21 @@ class YoutubeApiAdapter {
   Future<List<YoutubeVideoInfo>> getVideos(
       {@required final String channelId,
       @required final String apiKey,
-      final int maxResults = 10}) async {
-    final url =
+      final int maxResults = 10,
+      final DateTime publishedBefore}) async {
+    // TODO URLBuilder
+    var url =
         "$YOUTUBE_SEARCH_API_URL?key=$apiKey&channelId=$channelId&part=snippet,id&order=date&maxResults=20&type=video";
 
-    final response = await httpClient.get(url);
+    if (publishedBefore != null) {
+      var dateTime = publishedBefore.toIso8601String();
+      if(!dateTime.endsWith("Z")) dateTime += "Z";
+      url += "&publishedBefore=" + dateTime;
+    }
+
+    final response = await httpClient.get(url).timeout(Duration(seconds: 3),
+        onTimeout: () => throw Exception(
+            "Timeout while fetching video data from youtube api"));
 
     if (response.statusCode != 200)
       throw new Exception(

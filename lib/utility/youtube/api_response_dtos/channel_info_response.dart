@@ -16,5 +16,5 @@ abstract class ChannelInfoResponse implements Built<ChannelInfoResponse, Channel
   BuiltList<ChannelItem> get items;
 
   ChannelInfoResponse._();
-  factory ChannelInfoResponse([updates(ChannelInfoResponseBuilder b)]) =_$ChannelInfoResponse;
+factory ChannelInfoResponse([updates(ChannelInfoResponseBuilder b)]) =_$ChannelInfoResponse;
 }
