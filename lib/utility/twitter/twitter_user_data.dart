@@ -1,9 +1,18 @@
-class TwitterUserData{
+import 'package:flutter/material.dart';
+
+class TwitterUserData {
   String name;
   String twitterTag;
   int followerCount;
-  int followingCount;
   int tweetsCount;
   String imageUrl;
-  String thumbnailUrl;
+  String bannerUrl;
+
+  TwitterUserData(
+      {@required this.name,
+      @required this.twitterTag,
+      @required this.followerCount,
+      @required this.tweetsCount,
+      @required this.imageUrl,
+      this.bannerUrl});
 }
