@@ -33,7 +33,7 @@ class TwitterApiClient{
         bannerUrl: user.profileBannerUrl);
   }
 
-  Future<List<Tweet>> getTweets(String twitterName) async {
+  Future<List<Tweet>> getTweets(String twitterName, {int count}) async {
     final uri = new Uri(
         scheme: "https",
         host: "api.twitter.com",

@@ -56,39 +56,22 @@ class InfinityScrollList<T> extends StatefulWidget {
   State<StatefulWidget> createState() {
     switch (loadSetting) {
       case LoadSetting.TIME_BASED:
-        return InfinityScrollListTimeBasedState(
-            getDateTime: this.getDateTime,
-            dataSupplierTimeBased: this.dataSupplierTimeBased,
-            batchSize: this.batchSize,
-            compare: this.compare,
-            renderItem: this.renderItem);
+        return InfinityScrollListTimeBasedState<T>();
       case  LoadSetting.OFFSET_BASED:
-        return InfinityScrollListOffsetBasedState(
-          renderItem: this.renderItem,
-          dataSupplierOffsetBased: this.dataSupplierOffsetBased,
-          batchSize: this.batchSize,
-          compare: this.compare
-        );
+        return InfinityScrollListOffsetBasedState<T>();
       default: throw Exception("LoadSetting not supported");
     }
   }
 }
 
-abstract class InfinityScrollListState<T> extends State<InfinityScrollList> {
-  final RenderItem<T> renderItem;
-  final Compare<T> compare;
-  final int batchSize;
+abstract class InfinityScrollListState<T> extends State<InfinityScrollList<T>> {
 
   final _scrollController = ScrollController();
-
   // state
   WidgetState _state = WidgetState.INITIAL_STATE;
   List<T> _data = List();
 
-  InfinityScrollListState(this.renderItem, {this.compare, this.batchSize = 10})
-      : assert(renderItem != null),
-        assert(compare != null),
-        assert(batchSize != null);
+  InfinityScrollListState();
 
   Future<void> _loadMoreData();
   Future<void> _loadInitialData();
@@ -123,7 +106,7 @@ abstract class InfinityScrollListState<T> extends State<InfinityScrollList> {
               itemCount: _data.length + 1,
               itemBuilder: (context, position) {
                 if (position < _data.length)
-                  return this.renderItem(_data[position]);
+                  return this.widget.renderItem(_data[position]);
                 else if (position >= _data.length &&
                     _state == WidgetState.LOADING_MORE) {
                   return Center(
@@ -140,18 +123,8 @@ abstract class InfinityScrollListState<T> extends State<InfinityScrollList> {
 }
 
 class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
-  final DataSupplierTimeBased<T> dataSupplierTimeBased;
-  final GetDateTime<T> getDateTime;
 
-  InfinityScrollListTimeBasedState(
-      {@required this.dataSupplierTimeBased,
-      @required this.getDateTime,
-      RenderItem<T> renderItem,
-      Compare<T> compare,
-      int batchSize = 20})
-      : assert(dataSupplierTimeBased != null),
-        assert(getDateTime != null),
-        super(renderItem, compare: compare, batchSize: batchSize);
+  InfinityScrollListTimeBasedState(): super();
 
   @override
   Future<void> _loadMoreData() async {
@@ -159,13 +132,13 @@ class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
 
     List<T> additionalData = List();
 
-    final lastVideoPublishedAt = this.getDateTime(_data.last);
+    final lastVideoPublishedAt = this.widget.getDateTime(_data.last);
     // decrease by 1 milliseconds so we don't render the last video twice
     final beforeLastVideoPublished =
         lastVideoPublishedAt.subtract(Duration(milliseconds: 1));
     try {
-      additionalData = await this.dataSupplierTimeBased(
-          before: beforeLastVideoPublished, size: this.batchSize);
+      additionalData = await this.widget.dataSupplierTimeBased(
+          before: beforeLastVideoPublished, size: this.widget.batchSize);
     } catch (e) {
       this.setState(() => _state = WidgetState.HAS_ERROR);
       return;
@@ -173,7 +146,7 @@ class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
     // add them all
     _data.addAll(additionalData);
     // sort data list if necessary
-    _data.sort((a, b) => compare(a, b));
+    _data.sort((a, b) => this.widget.compare(a, b));
     // re-render list
     this.setState(() => _state = WidgetState.ITEMS_LOADED);
   }
@@ -184,26 +157,22 @@ class InfinityScrollListTimeBasedState<T> extends InfinityScrollListState<T> {
 
     List<T> data = List();
     try {
-      data = await this
-          .dataSupplierTimeBased(before: DateTime.now(), size: this.batchSize);
+      data = await this.widget
+          .dataSupplierTimeBased(before: DateTime.now(), size: this.widget.batchSize);
     } catch (e) {
       this.setState(() => _state = WidgetState.HAS_ERROR);
       return;
     }
     this._data = data;
     // sort data
-    data.sort((a, b) => compare(a, b));
+    data.sort((a, b) => this.widget.compare(a, b));
     // re-render list
     this.setState(() => _state = WidgetState.ITEMS_LOADED);
   }
 }
 
 class InfinityScrollListOffsetBasedState<T> extends InfinityScrollListState<T> {
-  InfinityScrollListOffsetBasedState({@required RenderItem<T> renderItem,
-      @required this.dataSupplierOffsetBased, Compare<T> compare, int batchSize = 20})
-      : assert(renderItem!=null), assert(dataSupplierOffsetBased!=null), super(renderItem, compare: compare, batchSize: batchSize);
-
-  DataSupplierOffsetBased dataSupplierOffsetBased;
+  InfinityScrollListOffsetBasedState() : super();
 
   @override
   Future<void> _loadInitialData() async {
@@ -211,14 +180,14 @@ class InfinityScrollListOffsetBasedState<T> extends InfinityScrollListState<T> {
 
     List<T> data = List();
     try {
-      data = await this.dataSupplierOffsetBased(offset: 0, size: batchSize);
+      data = await this.widget.dataSupplierOffsetBased(offset: 0, size: this.widget.batchSize);
     } catch (e) {
       this.setState(() => _state = WidgetState.HAS_ERROR);
       return;
     }
     this._data = data;
     // sort data
-    data.sort((a, b) => compare(a, b));
+    data.sort((a, b) => this.widget.compare(a, b));
     // re-render list
     this.setState(() => _state = WidgetState.ITEMS_LOADED);
   }
@@ -228,15 +197,14 @@ class InfinityScrollListOffsetBasedState<T> extends InfinityScrollListState<T> {
     setState(() => _state = WidgetState.LOADING_MORE);
     List<T> data = List();
     try {
-      data = await this
-          .dataSupplierOffsetBased(offset: data.length, size: batchSize);
+      data = await this.widget.dataSupplierOffsetBased(offset: data.length, size: this.widget.batchSize);
     } catch (e) {
       this.setState(() => _state = WidgetState.HAS_ERROR);
       return;
     }
     this._data.addAll(data);
     // sort data
-    data.sort((a, b) => compare(a, b));
+    data.sort((a, b) => this.widget.compare(a, b));
     // re-render list
     this.setState(() => _state = WidgetState.ITEMS_LOADED);
   }
