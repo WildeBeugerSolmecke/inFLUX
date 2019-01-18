@@ -36,7 +36,7 @@ class YoutubePageState extends State<YoutubePage> {
             var channelInfo = snapshot.data;
             return Scaffold(
                 appBar: YoutubeAppBar(channelName: channelInfo.title),
-                body: InfinityScrollList<YoutubeVideoInfo>.timeBased(
+                body: InfinityScrollListTimeBased<YoutubeVideoInfo>(
                     dataSupplierTimeBased: ({before, size}) =>
                         _youtubeApiAdapter.getVideos(
                             channelId: InFluxConfig.youtubeChannelId,
