@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:influx/widgets/generic/tap_to_reload.dart';
 
-typedef DataSupplierOffsetBased<T> = Future<List<T>> Function(
-    {@required int offset, @required int size});
-typedef DataSupplierTimeBased<T> = Future<List<T>> Function(
-    {@required DateTime before, @required int size});
+typedef DataSupplierTimeBased<T> = Future<List<T>> Function({@required DateTime olderThan, @required int size});
 typedef Compare<T> = int Function(T first, T second);
 typedef GetDateTime<T> = DateTime Function(T object);
 typedef RenderItem<T> = Widget Function(T object);
 
+/// This widget displays a list of the provided data. If you scroll all the
+/// way down, it request additional data from the provided data-provider,
+/// based on the date of the currently oldest item. It also shows an error
+/// message if the request fails.
+// ignore: must_be_immutable
 class InfinityScrollListTimeBased<T> extends StatefulWidget {
+  /// Should return a list of items of type T which are older than the passed
+  /// DateTime [olderThan] and have the specified [size].
   final DataSupplierTimeBased<T> dataSupplierTimeBased;
-  final Compare<T> compare;
+  /// Returns the DateTime of an item
   final GetDateTime<T> getDateTime;
+  /// The number of items loaded if reached the bottom of the list
   final int batchSize;
+  /// Determines how an item of type T is rendered in the list
   final RenderItem<T> renderItem;
-
-  // do not change order
-  static final Compare defaultComparator = (a, b) => -1;
+  /// Comparator which determines the order in which the items are displayed
+  /// by default the items are ordered chronologically with the newest at the top
+  Compare<T> compare;
 
   InfinityScrollListTimeBased({
     Key key,
@@ -26,11 +32,12 @@ class InfinityScrollListTimeBased<T> extends StatefulWidget {
     @required this.getDateTime,
     Compare<T> compare,
     this.batchSize = 20,
-  })  : this.compare = compare ?? defaultComparator,
-        assert(dataSupplierTimeBased != null),
+  })  : assert(dataSupplierTimeBased != null),
         assert(getDateTime != null),
         assert(renderItem != null),
-        super(key: key);
+        super(key: key){
+    this.compare = compare ?? (a,b) => getDateTime(a).isAfter(getDateTime(b)) ? -1 : 1;
+  }
 
   @override
   State<StatefulWidget> createState() => InfinityScrollListTimeBasedState<T>();
@@ -45,7 +52,7 @@ class InfinityScrollListTimeBasedState<T> extends State<InfinityScrollListTimeBa
   final _scrollController = ScrollController();
 
   Future<List<T>> _loadData(DateTime olderThan) async {
-    var data = await this.widget.dataSupplierTimeBased(before: olderThan.subtract(Duration(milliseconds: 1)), size: this.widget.batchSize);
+    var data = await this.widget.dataSupplierTimeBased(olderThan: olderThan.subtract(Duration(milliseconds: 1)), size: this.widget.batchSize);
     this._data.addAll(data);
     this._data.sort((a,b) => this.widget.compare(a,b));
     return this._data;
