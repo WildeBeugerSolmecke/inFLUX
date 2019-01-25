@@ -16,19 +16,18 @@ class TwitterPage extends StatefulWidget {
 class TwitterPageState extends State<TwitterPage> {
   @override
   Widget build(BuildContext context) {
-    return InfinityScrollListIdBased<Tweet>(
-      dataSupplierIdBased: ({int size, String olderThanId}) => this
-          .widget
-          .client
-          .getTweets(
-              twitterName: InFluxConfig.twitterName,
-              olderThanId: (olderThanId==null) ? null : int.parse(olderThanId),
-              count: size),
-      idExtractor: (tweet) => tweet.idStr,
-      renderItem: (tweet) => TweetItem(tweet),
-      batchSize: 10,
-    );
+        return InfinityScrollListIdBased<Tweet>(
+          dataSupplierIdBased: ({int size, String olderThanId}) => this
+              .widget
+              .client
+              .getTweets(
+                  twitterName: InFluxConfig.twitterName,
+                  olderThanId:
+                      (olderThanId == null) ? null : int.parse(olderThanId),
+                  count: size),
+          idExtractor: (tweet) => tweet.idStr,
+          renderItem: (tweet) => TweetItem(tweet),
+          batchSize: 10,
+        );
   }
-
-
 }

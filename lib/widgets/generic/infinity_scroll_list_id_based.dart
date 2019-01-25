@@ -41,7 +41,7 @@ class InfinityScrollListIdBased<T> extends StatefulWidget {
         assert(renderItem != null),
         assert(idExtractor != null),
         super(key: key) {
-    this.compare = compare ?? (a, b) => -1;
+    this.compare = null;
   }
 
   @override
@@ -63,7 +63,7 @@ class InfinityScrollListIdBasedState<T>
             olderThanId: olderThanId, size: this.widget.batchSize);
 
     this._data.addAll(data);
-    this._data.sort((a, b) => this.widget.compare(a, b));
+    if(this.widget.compare!=null) this._data.sort((a, b) => this.widget.compare(a, b));
     return this._data;
   }
 

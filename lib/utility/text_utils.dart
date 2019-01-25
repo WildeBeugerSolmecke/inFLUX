@@ -39,7 +39,7 @@ class TextUtils{
         sliceBeginIndex = urlInText.endIndex + 1;
       }
     }
-    return RichText(text: TextSpan(children: spans), textAlign: TextAlign.start);
+    return RichText(text: TextSpan(children: spans));
   }
 }
 

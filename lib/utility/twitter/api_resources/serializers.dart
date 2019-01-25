@@ -5,6 +5,7 @@ import 'package:influx/utility/twitter/api_resources/entities.dart';
 import 'package:influx/utility/twitter/api_resources/hashtag.dart';
 import 'package:influx/utility/twitter/api_resources/media.dart';
 import 'package:influx/utility/twitter/api_resources/size.dart';
+import 'package:influx/utility/twitter/api_resources/sizes.dart';
 import 'package:influx/utility/twitter/api_resources/turl.dart';
 import 'package:influx/utility/twitter/api_resources/tweet.dart';
 import 'package:influx/utility/twitter/api_resources/user.dart';
@@ -20,7 +21,8 @@ part 'serializers.g.dart';
   Size,
   TUrl,
   Tweet,
-  UserMention
+  UserMention,
+  Sizes
 ])
 final Serializers serializers  =
 (

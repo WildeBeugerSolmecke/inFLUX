@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:influx/utility/twitter/api_resources/sizes.dart';
 
 part 'media.g.dart';
 
@@ -20,6 +21,7 @@ abstract class Media implements Built<Media, MediaBuilder>{
   String get mediaUrl;
   @BuiltValueField(wireName: "media_url_https")
   String get mediaUrlHttps;
+  Sizes get sizes;
 
   Media._();
   factory Media([updates(MediaBuilder b)]) = _$Media;

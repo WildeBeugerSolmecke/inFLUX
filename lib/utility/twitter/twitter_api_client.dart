@@ -35,8 +35,8 @@ class TwitterApiClient{
 
   Future<List<Tweet>> getTweets({@required String twitterName, int count = 20, int olderThanId}) async {
 
-    var queryParameters = {'screen_name': twitterName, 'tweet_mode': 'extended', 'count' : count.toString()};
-    if(olderThanId!=null) queryParameters.addAll({"max_id": (olderThanId+1).toString()});
+    var queryParameters = {'screen_name': twitterName, 'tweet_mode': 'extended', 'count' : count.toString(), 'include_rts': 'false', 'exclude_replies':'true'};
+    if(olderThanId!=null) queryParameters.addAll({"max_id": (olderThanId-1).toString()});
 
     final uri = new Uri(
         scheme: "https",
