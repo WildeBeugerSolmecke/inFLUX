@@ -33,17 +33,16 @@ class TwitterApiClient{
         bannerUrl: user.profileBannerUrl);
   }
 
-  Future<List<Tweet>> getTweets({@required String twitterName, int count = 20, String olderThanId}) async {
+  Future<List<Tweet>> getTweets({@required String twitterName, int count = 20, int olderThanId}) async {
 
     var queryParameters = {'screen_name': twitterName, 'tweet_mode': 'extended', 'count' : count.toString()};
-    if(olderThanId!=null) queryParameters.addAll({"max_id": olderThanId});
+    if(olderThanId!=null) queryParameters.addAll({"max_id": (olderThanId+1).toString()});
 
     final uri = new Uri(
         scheme: "https",
         host: "api.twitter.com",
         path: "1.1/statuses/user_timeline.json",
         queryParameters: queryParameters);
-
 
     Response response = await this.client.get(uri, headers: {'Authorization': 'Bearer ${InFluxConfig.twitterApiKey}'});
     if(response.statusCode != 200) throw new Exception("response code was ${response.statusCode} but expected 200");

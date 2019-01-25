@@ -22,11 +22,11 @@ class TwitterPageState extends State<TwitterPage> {
           .client
           .getTweets(
               twitterName: InFluxConfig.twitterName,
-              olderThanId: olderThanId,
+              olderThanId: (olderThanId==null) ? null : int.parse(olderThanId),
               count: size),
       idExtractor: (tweet) => tweet.idStr,
       renderItem: (tweet) => TweetItem(tweet),
-      batchSize: 20,
+      batchSize: 10,
     );
   }
 

@@ -1,36 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:influx/utility/text_utils.dart';
 import 'package:influx/utility/twitter/api_resources/tweet.dart';
 import 'package:intl/intl.dart';
 
 class TweetItem extends StatelessWidget {
-
   final Tweet _tweet;
   TweetItem(this._tweet);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          /// name, tag, time
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(_tweet.user.name, style: _userNameTextStyle),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
-              Text("@${_tweet.user.screenName}", style: _tweetHeadlineStyle),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
-              Text(
-                  "\u{00b7} " +
-                      _parseToDisplayedFormat(
-                          _parseToDateTime(_tweet.createdAt)),
-                  style: _tweetHeadlineStyle)
-            ],
-          ),
-          Padding(padding: EdgeInsets.symmetric(vertical: 2)),
-          Text(
-            _tweet.fullText,
+          ClipOval(
+              child: Image.network(_tweet.user.profileImageUrlHttps,
+                  width: 48, height: 48,alignment: Alignment.topLeft)),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 5.0),),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                /// name, tag, time
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(_tweet.user.name, style: _userNameTextStyle),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
+                    Text("@${_tweet.user.screenName}",
+                        style: _tweetHeadlineStyle),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
+                    Text(
+                        "\u{00b7} " +
+                            _parseToDisplayedFormat(
+                                _parseToDateTime(_tweet.createdAt)),
+                        style: _tweetHeadlineStyle)
+                  ],
+                ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 2)),
+                TextUtils.buildRichTextWithClickableUrls(
+                    _tweet.fullText,
+                    _tweet.entities.urls
+                        .map((turl) =>
+                            UrlInText(turl.indices[0], turl.indices[1]))
+                        .toList())
+              ],
+            ),
           )
         ],
       ),

@@ -57,7 +57,7 @@ class InfinityScrollListIdBasedState<T>
   final _scrollController = ScrollController();
 
   Future<List<T>> _loadData([String olderThanId]) async {
-    var data = (olderThanId == null)
+    var data = (olderThanId==null)
         ? await this.widget.dataSupplierIdBased(size: this.widget.batchSize)
         : await this.widget.dataSupplierIdBased(
             olderThanId: olderThanId, size: this.widget.batchSize);
