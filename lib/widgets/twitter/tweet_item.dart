@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:influx/utility/text_utils.dart';
 import 'package:influx/utility/twitter/api_resources/tweet.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TweetItem extends StatelessWidget {
   final Tweet _tweet;
   TweetItem(this._tweet);
 
+  void _onDrag(DragEndDetails dragDetails){
+    if(dragDetails.primaryVelocity>250){
+      launch("https://twitter.com/${this._tweet.user.screenName}/status/${this._tweet.idStr}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onHorizontalDragEnd: (dragEndDetails) => _onDrag(dragEndDetails),
+        child: Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -55,7 +64,8 @@ class TweetItem extends StatelessWidget {
                             ? _tweet.entities.media.last.sizes.medium.height
                                 .toDouble()
                             : 400,
-                fit: BoxFit.fitHeight,)
+                        fit: BoxFit.fitHeight,
+                      )
                     : Container()
               ],
             ),
@@ -63,7 +73,7 @@ class TweetItem extends StatelessWidget {
         ],
       ),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-    );
+    ));
   }
 
   DateTime _parseToDateTime(String time) =>
