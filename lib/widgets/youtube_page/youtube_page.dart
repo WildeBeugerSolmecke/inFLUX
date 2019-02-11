@@ -3,7 +3,7 @@ import 'package:influx/config.dart';
 import 'package:influx/utility/youtube/model/youtube_channel_info.dart';
 import 'package:influx/utility/youtube/model/youtube_video_info.dart';
 import 'package:influx/utility/youtube/youtube_api_adapter.dart';
-import 'package:influx/widgets/generic/infinity_scroll_list.dart';
+import 'package:influx/widgets/generic/infinity_scroll_list_time_based.dart';
 import 'package:influx/widgets/generic/tap_to_reload.dart';
 import 'package:influx/widgets/youtube_page/youtube_app_bar.dart';
 import 'package:influx/widgets/youtube_page/youtube_video_list_item.dart';
@@ -36,13 +36,13 @@ class YoutubePageState extends State<YoutubePage> {
             var channelInfo = snapshot.data;
             return Scaffold(
                 appBar: YoutubeAppBar(channelName: channelInfo.title),
-                body: InfinityScrollList<YoutubeVideoInfo>.timeBased(
-                    dataSupplierTimeBased: ({before, size}) =>
+                body: InfinityScrollListTimeBased<YoutubeVideoInfo>(
+                    dataSupplierTimeBased: ({olderThan, size}) =>
                         _youtubeApiAdapter.getVideos(
                             channelId: InFluxConfig.youtubeChannelId,
                             apiKey: InFluxConfig.youtubeApiKey,
                             maxResults: size,
-                            publishedBefore: before),
+                            publishedBefore: olderThan),
                     compare: (a, b) =>
                         a.publishedAt.isAfter(b.publishedAt) ? -1 : 1,
                     getDateTime: (video) => video.publishedAt,

@@ -26,9 +26,11 @@ class DateTimeConverter {
     else if(now.month == time.month){
       return '4 weeks ago';
     }
-    else if((now.month - time.month) < 12) {
+    else if(now.year == time.year && now.month-time.month < 12) {
       return '${(now.month - time.month).floor()} month ago';
     }
+    else if(now.year != time.year && 12-(time.month- now.month) < 12)
+      return '${12-(time.month- now.month)} month ago';
     else {
       if((now.year-time.year)==1) return '1 year ago';
       return '${(now.year - time.year).floor()} years ago';
