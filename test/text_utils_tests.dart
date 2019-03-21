@@ -7,7 +7,7 @@ void main() {
     String text = 'This \nte\nxt \u{1f603}	has a https://google.com lin-k and another link https://test.com';
     var urls = <UrlInText>[UrlInText(19, 36), UrlInText(60, 75)];
     var richText = TextUtils.buildRichTextWithClickableUrls(text, urls);
-    print("breakpoint");
+    expect(richText, isNot(null));
   });
 
   testWidgets('my first widget test', (WidgetTester tester) async {

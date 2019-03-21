@@ -41,7 +41,6 @@ void main() {
         Tweet.serializer, json.decode(DemoTweet.json));
     var urls = tweet.entities.urls
         .map((turl) => UrlInText(turl.indices[0], turl.indices[1]));
+    expect(urls, isNot(null));
   });
 }
-
-
