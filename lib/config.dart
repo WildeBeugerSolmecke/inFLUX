@@ -11,9 +11,9 @@ class InFluxConfig {
   //content:
   static const String rssFeedUrl = 'http://rss.cnn.com/rss/edition.rss';
 
-  static final String youtubeApiKey = "AIzaSyC8FMty17OjZdNnCKD3cYf9lrt7O4EJ7XA";
+  static final String youtubeApiKey = 'AIzaSyC8FMty17OjZdNnCKD3cYf9lrt7O4EJ7XA';
   static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
 
-  static final String twitterApiKey = "AAAAAAAAAAAAAAAAAAAAAKvc9AAAAAAA1tTZ4LpAH%2FIFQKRey946fMJVPbE%3DLs2QfSRA181PoTDTfzrRlJsXkbVYlol8ZAsJZjeJTeu5IGqUmo";
+  static final String twitterApiKey = 'AAAAAAAAAAAAAAAAAAAAAKvc9AAAAAAA1tTZ4LpAH%2FIFQKRey946fMJVPbE%3DLs2QfSRA181PoTDTfzrRlJsXkbVYlol8ZAsJZjeJTeu5IGqUmo';
   static final String twitterName = "solmecke";
 }
