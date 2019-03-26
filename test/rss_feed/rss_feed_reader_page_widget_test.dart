@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:influx/widgets/rss_feed_page.dart';
+import 'package:influx/widgets/rss_feed/rss_feed_page.dart';
 import 'package:influx/utility/rss_feed/rss_feed_reader.dart';
 import 'package:influx/config.dart';
 

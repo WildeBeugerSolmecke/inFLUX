@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:influx/widgets/rss_feed_page.dart';
+import 'package:influx/widgets/rss_feed/rss_feed_page.dart';
 import 'package:influx/widgets/twitter/twitter_page.dart';
 import 'package:influx/widgets/youtube_page/youtube_page.dart';
 
