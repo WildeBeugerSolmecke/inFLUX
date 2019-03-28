@@ -55,7 +55,6 @@ class _RssFeedState extends State<RssFeedPage> {
 
             final listItems = _rssPosts
                 .map<ListTile>((rssPost) => ListTile(
-                      leading: Icon(Icons.arrow_right),
                       title: _rssPostTitleToText(rssPost),
                       subtitle: _pubDate(rssPost),
                       onTap: _rssPostUrlToTapCallback(rssPost),
@@ -70,7 +69,7 @@ class _RssFeedState extends State<RssFeedPage> {
                   controller: _scrollController,
                 ));
           } else if (snapshot.hasError) {
-            return Text("${snapshot.error}"); // TODO: Hide error details!
+            return Text("${snapshot.error}");
 
           } else {
             return CircularProgressIndicator();
@@ -82,7 +81,6 @@ class _RssFeedState extends State<RssFeedPage> {
   }
 
   Text _rssPostTitleToText(RssPost post) {
-    // TODO: Trim string to fit a single line!
     return Text(post.title);
   }
 

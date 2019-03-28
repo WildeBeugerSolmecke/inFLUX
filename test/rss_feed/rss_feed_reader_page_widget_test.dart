@@ -38,8 +38,9 @@ void main() {
   // TODO: (See the example below: there is no 'tigerente' widget created
   // TODO: anywhere, yet the test passes!)
   // TODO: This worked before upgrading to Flutter 1.0 (did it??).
-  // TODO: We should take a closer look at this ASAP!
-  /*testWidgets('RssFeedReader widget test for bad RSS items', (WidgetTester tester) async {
+  // TODO: There are numerous issues on Flutters bug tracker, e.g.
+  // TODO: https://github.com/flutter/flutter/issues/29368
+  testWidgets('RssFeedReader widget test for bad RSS items', (WidgetTester tester) async {
     tester.runAsync(() async {
       // a mock HTTP client:
       final mockHttpClient = MockClient((request) async {
@@ -61,9 +62,9 @@ void main() {
       expect(find.text('RSS feed item one'), findsOneWidget);
       expect(find.text('RSS feed item two'), findsOneWidget);
       expect(find.text('RSS feed item three'), findsOneWidget);
-      expect(find.text('tigerente'), findsOneWidget);
+//      expect(find.text('tigerente'), findsOneWidget); // this one passes allthoug it should not!
     });
-  });*/
+  });
 }
 
 const mockRssResponse = '<?xml version="1.0" encoding="UTF-8" ?>' +

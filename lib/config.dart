@@ -9,7 +9,7 @@ class InFluxConfig {
   static const String appBarTitle = 'inFLUX';
 
   //content:
-  static const String rssFeedUrl = 'http://rss.cnn.com/rss/edition.rss';
+  static const String rssFeedUrl = 'https://www.wbs-law.de/feed/';
 
   static final String youtubeApiKey = 'AIzaSyC8FMty17OjZdNnCKD3cYf9lrt7O4EJ7XA';
   static final String youtubeChannelId = 'UCb5TfGtSgvNPVPQawfCFuAw';
